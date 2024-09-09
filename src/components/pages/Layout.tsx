@@ -1,30 +1,47 @@
-import { Outlet } from "react-router-dom";
 import "@fontsource/roboto/300.css";
 import "@fontsource/roboto/400.css";
 import "@fontsource/roboto/500.css";
 import "@fontsource/roboto/700.css";
-import Button from "@mui/material/Button";
-import SaveIcon from "@mui/icons-material/Save";
+
+import { Outlet, useLocation } from "react-router-dom";
+import {
+  Drawer,
+  List,
+  ListItemText,
+  Link,
+  CssBaseline,
+  Box,
+  ListItemButton,
+} from "@mui/material";
+import styles from "./pages.module.css";
 
 export function Layout() {
+  const location = useLocation();
+
   return (
     <>
-      <Button variant="contained" startIcon={<SaveIcon />}>
-        Save
-      </Button>
-      <div id="sidebar">
-        <nav>
-          <ul>
-            <li>
-              <a href={`/orders`}>Orders</a>
-            </li>
-            <li>
-              <a href={`/vehicles`}>Vehicles</a>
-            </li>
-          </ul>
-        </nav>
+      <CssBaseline />
+      <Drawer variant="permanent">
+        <List className={styles.menu}>
+          <ListItemButton
+            component={Link}
+            href="/orders"
+            selected={location.pathname === "/orders"}
+          >
+            <ListItemText primary="Orders" />
+          </ListItemButton>
+          <ListItemButton
+            component={Link}
+            href="/vehicles"
+            selected={location.pathname === "/vehicles"}
+          >
+            <ListItemText primary="Vehicles" />
+          </ListItemButton>
+        </List>
+      </Drawer>
+      <Box component="main" className={styles.main}>
         <Outlet />
-      </div>
+      </Box>
     </>
   );
 }
