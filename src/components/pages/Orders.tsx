@@ -1,3 +1,4 @@
+import { useQuery } from "react-query";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
 import TableCell from "@mui/material/TableCell";
@@ -5,7 +6,6 @@ import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
-import { useEffect, useState } from "react";
 import { config } from "../../config";
 
 type Order = {
@@ -18,16 +18,23 @@ type Order = {
 };
 
 export function Orders() {
-  const [orders, setOrders] = useState([]);
-  
-  useEffect(() => {
-    fetch(`${config.apiUrl}/orders`).then((response) => {
-      response.json().then((data) => {
-        setOrders(data);
-      });
-    });
-  }, []);
+  const {
+    data: orders,
+    isLoading,
+    isError,
+  } = useQuery("orders", async () => {
+    const response = await fetch(`${config.apiUrl}/orders`);
+    const data = await response.json();
+    return data;
+  });
 
+  if (isLoading) {
+    return <div>Loading...</div>;
+  }
+
+  if (isError) {
+    return <div>Error</div>;
+  }
 
   return (
     <TableContainer component={Paper}>
