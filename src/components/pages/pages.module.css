@@ -1,8 +1,8 @@
 .main {
-  display: grid;
-  place-items: center;
   padding: 50px;
   margin-left: 300px;
+  background-color: #eee;
+  height: 100vh;
 }
 
 .menu {

@@ -1,19 +1,42 @@
 import { Button, Modal } from "@mui/material";
 import { useQuery } from "react-query";
-import { Order } from "../../types";
 import { useState } from "react";
+import { useMutation, useQueryClient } from "react-query";
+import { SubmitHandler } from "react-hook-form";
 import { OrdersDatagrid } from "../OrdersDatagrid";
 import { OrdersForm } from "../OrdersForm";
-import { getOrders } from "../../api/orders";
+import { api } from "../../api";
+import { Order } from "../../types";
+
+const key = ["orders"];
 
 export function Orders() {
   const [openModal, setOpenModal] = useState(false);
+
+  const queryClient = useQueryClient();
+
+  const { mutate: createOrder } = useMutation(
+    key,
+    async (order: Order) => {
+      await api.postOrders(order);
+    },
+    {
+      onSuccess: () => {
+        queryClient.invalidateQueries(key);
+        setOpenModal(false);
+      },
+    }
+  );
+
+  const submitHandler: SubmitHandler<Order> = async (order) => {
+    createOrder(order);
+  };
 
   const {
     data: orders,
     isLoading,
     isError,
-  } = useQuery<Order[]>("orders", getOrders);
+  } = useQuery<Order[]>(key, api.getOrders);
 
   if (isLoading) {
     return <div>Loading...</div>;
@@ -29,11 +52,14 @@ export function Orders() {
         variant="contained"
         color="primary"
         onClick={() => setOpenModal(true)}
+        sx={{ marginBottom: 2 }}
       >
-        Create Order
+        New Order
       </Button>
       <Modal open={openModal} onClose={() => setOpenModal(false)}>
-        <OrdersForm />
+        <div>
+          <OrdersForm submitHandler={submitHandler} />
+        </div>
       </Modal>
       <OrdersDatagrid orders={orders} />
     </>

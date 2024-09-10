@@ -19,23 +19,19 @@ export function OrdersDatagrid({ orders }: OrdersDatagridProps) {
       <Table aria-label="simple table">
         <TableHead>
           <TableRow>
+            <TableCell>Date</TableCell>
             <TableCell>Invoice Number</TableCell>
-            <TableCell align="right">Date</TableCell>
-            <TableCell align="right">Weight (Kg)</TableCell>
-            <TableCell align="right">Assigned</TableCell>
+            <TableCell>Weight (Kg)</TableCell>
+            <TableCell>Destination</TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
           {orders?.map((order: Order) => (
             <TableRow key={order.invoiceNumber}>
-              <TableCell component="th" scope="row">
-                {order.invoiceNumber}
-              </TableCell>
-              <TableCell align="right">{order.date?.toString()}</TableCell>
-              <TableCell align="right">{order.weight}</TableCell>
-              <TableCell align="right">
-                {order.assignedTo?.numberPlate}
-              </TableCell>
+              <TableCell>{order.date?.toString()}</TableCell>
+              <TableCell>{order.invoiceNumber}</TableCell>
+              <TableCell>{order.weight}</TableCell>
+              <TableCell>{order.destination}</TableCell>
             </TableRow>
           ))}
         </TableBody>

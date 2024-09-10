@@ -1,12 +1,11 @@
 export type Vehicle = {
   numberPlate: string;
-  capacity: number;
+  weightCapacity: number;
 };
 
 export type Order = {
+  date: Date;
+  weight: number;
   invoiceNumber: string;
   destination?: string;
-  date?: Date;
-  weight?: number;
-  assignedTo?: Vehicle;
 };

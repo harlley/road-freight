@@ -8,3 +8,9 @@
   padding: 20px;
   width: 600px;
 }
+
+.root form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
