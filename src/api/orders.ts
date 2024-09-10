@@ -5,6 +5,11 @@ const headers = {
   "Content-Type": "application/json",
 };
 
+export const getOrders = async () => {
+  const response = await fetch(`${config.apiUrl}/orders`);
+  return await response.json();
+};
+
 export const postOrders = async (order: Order) => {
   const response = await fetch(`${config.apiUrl}/orders`, {
     method: "POST",
