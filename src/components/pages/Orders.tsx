@@ -9,6 +9,29 @@ import Paper from "@mui/material/Paper";
 import { config } from "../../config";
 import { Order } from "../../types";
 import Button from "@mui/material/Button";
+import Typography from "@mui/material/Typography";
+import Modal from "@mui/material/Modal";
+import { useState } from "react";
+import {
+  Box,
+  FormControl,
+  FormHelperText,
+  InputLabel,
+  OutlinedInput,
+} from "@mui/material";
+import { postOrders } from "../../api/orders";
+import { useForm, SubmitHandler } from "react-hook-form";
+
+const style = {
+  position: "absolute",
+  top: "50%",
+  left: "50%",
+  transform: "translate(-50%, -50%)",
+  bgcolor: "background.paper",
+  boxShadow: 24,
+  p: 4,
+  width: 600,
+};
 
 export function Orders() {
   const {
@@ -21,6 +44,21 @@ export function Orders() {
     return data;
   });
 
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<Order>({ shouldUseNativeValidation: false });
+
+  const submitHandler: SubmitHandler<Order> = async (data) => {
+    console.log(errors);
+    await postOrders(data);
+  };
+
+  const [open, setOpen] = useState(false);
+  const handleOpen = () => setOpen(true);
+  const handleClose = () => setOpen(false);
+
   if (isLoading) {
     return <div>Loading...</div>;
   }
@@ -29,80 +67,55 @@ export function Orders() {
     return <div>Error</div>;
   }
 
-  const add = async () => {
-    const response = await fetch(`${config.apiUrl}/orders`, {
-      method: "POST",
-      body: JSON.stringify({
-        invoiceNumber: "invoiceNumber",
-        destination: "destination",
-        date: new Date(),
-        weight: 100,
-        assignedTo: {
-          numberPlate: "numberPlate",
-          capacity: 1000,
-        },
-      }),
-      headers: {
-        "Content-Type": "application/json",
-      },
-    });
-    const data = await response.json();
-    console.log(data);
-  };
-
-  const remove = async (invoiceNumber: string) => {
-    const response = await fetch(`${config.apiUrl}/orders/${invoiceNumber}`, {
-      method: "DELETE",
-    });
-    console.log(response);
-  };
-
-  const update = async (invoiceNumber: string) => {
-    const response = await fetch(`${config.apiUrl}/orders/${invoiceNumber}`, {
-      method: "PUT",
-      body: JSON.stringify({
-        invoiceNumber: "invoiceNumber",
-        destination: "destination updated",
-        date: new Date(),
-        weight: 100,
-        assignedTo: {
-          numberPlate: "numberPlate",
-          capacity: 1000,
-        },
-      }),
-      headers: {
-        "Content-Type": "application/json",
-      },
-    });
-    const data = await response.json();
-    console.log(data);
-  };
+  // const save = async (event: React.FormEvent<HTMLFormElement>) => {
+  //   event.preventDefault();
+  //   const formData = new FormData(event.target as HTMLFormElement);
+  //   const order = Object.fromEntries(formData) as unknown as Order;
+  //   console.log(order);
+  //   await postOrders(order);
+  // };
 
   return (
     <>
-      <Button variant="contained" color="primary" onClick={add}>
-        Add
+      <Button variant="contained" color="primary" onClick={handleOpen}>
+        Create Order
       </Button>
-      <Button
-        variant="contained"
-        color="primary"
-        onClick={() => remove("invoiceNumber")}
+      <Modal
+        open={open}
+        onClose={handleClose}
+        aria-labelledby="modal-modal-title"
+        aria-describedby="modal-modal-description"
       >
-        Delete
-      </Button>
-      <Button
-        variant="contained"
-        color="primary"
-        onClick={() => update("invoiceNumber")}
-      >
-        Update
-      </Button>
+        <Box sx={style}>
+          <form onSubmit={handleSubmit(submitHandler)} noValidate>
+            <Typography id="modal-modal-title" variant="h6" component="h2">
+              Create Order
+            </Typography>
+            <FormControl sx={{ width: "100%" }}>
+              <InputLabel {...register("invoiceNumber")}>
+                Invoice Number
+              </InputLabel>
+              <OutlinedInput
+                label="Invoice Number"
+                fullWidth
+                {...register("invoiceNumber", { required: true })}
+                error={!!errors.invoiceNumber}
+              />
+              {errors.invoiceNumber && <FormHelperText>Error</FormHelperText>}
+            </FormControl>
+
+            <Button variant="contained" color="primary" type="submit">
+              Save
+            </Button>
+          </form>
+        </Box>
+      </Modal>
 
       <TableContainer component={Paper}>
         <Table aria-label="simple table">
           <TableHead>
             <TableRow>
-              <TableCell>Destination</TableCell>
+              <TableCell>Invoice Number</TableCell>
               <TableCell align="right">Date</TableCell>
               <TableCell align="right">Weight (Kg)</TableCell>
               <TableCell align="right">Assigned</TableCell>
@@ -115,9 +128,9 @@ export function Orders() {
                 sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
               >
                 <TableCell component="th" scope="row">
-                  {order.destination}
+                  {order.invoiceNumber}
                 </TableCell>
-                <TableCell align="right">{order.date.toString()}</TableCell>
+                <TableCell align="right">{order.date?.toString()}</TableCell>
                 <TableCell align="right">{order.weight}</TableCell>
                 <TableCell align="right">
                   {order.assignedTo?.numberPlate}

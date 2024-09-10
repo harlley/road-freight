@@ -5,8 +5,8 @@ export type Vehicle = {
 
 export type Order = {
   invoiceNumber: string;
-  destination: string;
-  date: Date;
-  weight: number;
+  destination?: string;
+  date?: Date;
+  weight?: number;
   assignedTo?: Vehicle;
 };
