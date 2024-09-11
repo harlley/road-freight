@@ -9,7 +9,7 @@ import {
   useTheme,
 } from "@mui/material";
 import { useState } from "react";
-import styles from "../datagrids.module.css";
+import styles from "./Datagrid.module.css";
 import { Entity } from "../../types";
 
 type DatagrodProps<T extends Entity> = {
@@ -22,6 +22,7 @@ export function Datagrid<T extends Entity>({
   rows,
   columns,
   onSelect,
+  ...rest
 }: DatagrodProps<T>) {
   const [select, setSelect] = useState<T | null>(null);
   const theme = useTheme();
@@ -32,7 +33,7 @@ export function Datagrid<T extends Entity>({
   };
 
   return (
-    <TableContainer component={Paper}>
+    <TableContainer component={Paper} {...rest}>
       <Table>
         <TableHead>
           <TableRow>

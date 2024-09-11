@@ -1,5 +1,11 @@
 import { createBrowserRouter, Navigate } from "react-router-dom";
-import { Layout, Orders, Vehicles, Error } from "./components/pages";
+import {
+  Layout,
+  Orders,
+  Vehicles,
+  Error,
+  Assignments,
+} from "./components/pages";
 
 export const router = createBrowserRouter([
   {
@@ -18,6 +24,10 @@ export const router = createBrowserRouter([
       {
         path: "vehicles",
         element: <Vehicles />,
+      },
+      {
+        path: "assignments",
+        element: <Assignments />,
       },
     ],
   },
