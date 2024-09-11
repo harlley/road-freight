@@ -12,11 +12,11 @@ const key = ["orders"];
 
 export function Orders() {
   const [openModal, setOpenModal] = useState(false);
+  const [selectedOrder, setSelectedOrder] = useState<Order>();
 
   const queryClient = useQueryClient();
 
   const { mutate: createOrder } = useMutation(
-    key,
     async (order: Order) => {
       await api.postOrders(order);
     },
@@ -28,8 +28,24 @@ export function Orders() {
     }
   );
 
+  const { mutate: deleteOrder } = useMutation(
+    async (invoiceNumber: Pick<Order, "invoiceNumber">) => {
+      await api.deleteOrders(invoiceNumber);
+    },
+    {
+      onSuccess: () => {
+        queryClient.invalidateQueries(key);
+        setOpenModal(false);
+      },
+    }
+  );
+
   const submitHandler: SubmitHandler<Order> = async (order) => {
     createOrder(order);
+  };
+
+  const deleteHandler = async (order: Order) => {
+    deleteOrder(order);
   };
 
   const {
@@ -56,12 +72,26 @@ export function Orders() {
       >
         New Order
       </Button>
+      {selectedOrder && (
+        <Button
+          variant="contained"
+          color="error"
+          onClick={() => deleteHandler(selectedOrder)}
+          sx={{ marginBottom: 2, marginLeft: 2 }}
+        >
+          Delete
+        </Button>
+      )}
       <Modal open={openModal} onClose={() => setOpenModal(false)}>
         <div>
           <OrdersForm submitHandler={submitHandler} />
         </div>
       </Modal>
-      <OrdersDatagrid orders={orders} />
+      <OrdersDatagrid
+        orders={orders}
+        onSelect={(order) => setSelectedOrder(order)}
+      />
+      {JSON.stringify(selectedOrder, null, 2)}
     </>
   );
 }
