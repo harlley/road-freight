@@ -6,7 +6,6 @@ export const ordersHandler = [
   http.post(`${config.apiUrl}/orders`, async ({ request }) => {
     const orders = JSON.parse(localStorage.getItem("orders") || "[]");
     const newOrder = (await request.json()) as Order;
-
     if (
       orders.find(
         (order: Order) => order.invoiceNumber === newOrder.invoiceNumber
@@ -17,8 +16,7 @@ export const ordersHandler = [
         { status: 400 }
       );
     }
-
-    orders.push(newOrder);
+    orders.push({ id: window.crypto.randomUUID(), ...newOrder });
     localStorage.setItem("orders", JSON.stringify(orders));
     return HttpResponse.json(newOrder, { status: 201 });
   }),
@@ -28,11 +26,9 @@ export const ordersHandler = [
     return HttpResponse.json(orders);
   }),
 
-  http.delete(`${config.apiUrl}/orders/:invoiceNumber`, async ({ params }) => {
+  http.delete(`${config.apiUrl}/orders/:id`, async ({ params }) => {
     const orders = JSON.parse(localStorage.getItem("orders") || "[]");
-    const index = orders.findIndex(
-      (order: Order) => order.invoiceNumber === params.invoiceNumber
-    );
+    const index = orders.findIndex((order: Order) => order.id === params.id);
 
     if (index !== -1) {
       orders.splice(index, 1);
@@ -43,22 +39,17 @@ export const ordersHandler = [
     return HttpResponse.json({ message: "Order not found" }, { status: 404 });
   }),
 
-  http.put(
-    `${config.apiUrl}/orders/:invoiceNumber`,
-    async ({ params, request }) => {
-      const orders = JSON.parse(localStorage.getItem("orders") || "[]");
-      const index = orders.findIndex(
-        (order: Order) => order.invoiceNumber === params.invoiceNumber
-      );
+  http.put(`${config.apiUrl}/orders/:id`, async ({ params, request }) => {
+    const orders = JSON.parse(localStorage.getItem("orders") || "[]");
+    const index = orders.findIndex((order: Order) => order.id === params.id);
 
-      if (index !== -1) {
-        const updatedOrder = (await request.json()) as Order;
-        orders[index] = updatedOrder;
-        localStorage.setItem("orders", JSON.stringify(orders));
-        return HttpResponse.json(updatedOrder, { status: 200 });
-      }
-
-      return HttpResponse.json({ message: "Order not found" }, { status: 404 });
+    if (index !== -1) {
+      const updatedOrder = (await request.json()) as Order;
+      orders[index] = updatedOrder;
+      localStorage.setItem("orders", JSON.stringify(orders));
+      return HttpResponse.json(updatedOrder, { status: 200 });
     }
-  ),
+
+    return HttpResponse.json({ message: "Order not found" }, { status: 404 });
+  }),
 ];

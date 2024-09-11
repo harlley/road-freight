@@ -6,7 +6,6 @@ export const vehiclesHandler = [
   http.post(`${config.apiUrl}/vehicles`, async ({ request }) => {
     const vehicles = JSON.parse(localStorage.getItem("vehicles") || "[]");
     const newVehicle = (await request.json()) as Vehicle;
-
     if (
       vehicles.find(
         (vehicle: Vehicle) => vehicle.numberPlate === newVehicle.numberPlate
@@ -17,8 +16,7 @@ export const vehiclesHandler = [
         { status: 400 }
       );
     }
-
-    vehicles.push(newVehicle);
+    vehicles.push({ id: window.crypto.randomUUID(), ...newVehicle });
     localStorage.setItem("vehicles", JSON.stringify(vehicles));
     return HttpResponse.json(newVehicle, { status: 201 });
   }),
@@ -28,10 +26,10 @@ export const vehiclesHandler = [
     return HttpResponse.json(vehicles);
   }),
 
-  http.delete(`${config.apiUrl}/vehicles/:numberPlate`, async ({ params }) => {
+  http.delete(`${config.apiUrl}/vehicles/:id`, async ({ params }) => {
     const vehicles = JSON.parse(localStorage.getItem("vehicles") || "[]");
     const index = vehicles.findIndex(
-      (vehicle: Vehicle) => vehicle.numberPlate === params.numberPlate
+      (vehicle: Vehicle) => vehicle.id === params.id
     );
 
     if (index !== -1) {
@@ -43,25 +41,19 @@ export const vehiclesHandler = [
     return HttpResponse.json({ message: "Vehicle not found" }, { status: 404 });
   }),
 
-  http.put(
-    `${config.apiUrl}/vehicles/:numberPlate`,
-    async ({ params, request }) => {
-      const vehicles = JSON.parse(localStorage.getItem("vehicles") || "[]");
-      const index = vehicles.findIndex(
-        (vehicle: Vehicle) => vehicle.numberPlate === params.numberPlate
-      );
+  http.put(`${config.apiUrl}/vehicles/:id`, async ({ params, request }) => {
+    const vehicles = JSON.parse(localStorage.getItem("vehicles") || "[]");
+    const index = vehicles.findIndex(
+      (vehicle: Vehicle) => vehicle.id === params.id
+    );
 
-      if (index !== -1) {
-        const updatedVehicle = (await request.json()) as Vehicle;
-        vehicles[index] = updatedVehicle;
-        localStorage.setItem("vehicles", JSON.stringify(vehicles));
-        return HttpResponse.json(updatedVehicle, { status: 200 });
-      }
-
-      return HttpResponse.json(
-        { message: "Vehicle not found" },
-        { status: 404 }
-      );
+    if (index !== -1) {
+      const updatedVehicle = (await request.json()) as Vehicle;
+      vehicles[index] = updatedVehicle;
+      localStorage.setItem("vehicles", JSON.stringify(vehicles));
+      return HttpResponse.json(updatedVehicle, { status: 200 });
     }
-  ),
+
+    return HttpResponse.json({ message: "Vehicle not found" }, { status: 404 });
+  }),
 ];

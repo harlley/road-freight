@@ -3,10 +3,10 @@ import { useQuery } from "react-query";
 import { useState } from "react";
 import { useMutation, useQueryClient } from "react-query";
 import { SubmitHandler } from "react-hook-form";
-import { OrdersDatagrid } from "../OrdersDatagrid";
 import { OrdersForm } from "../OrdersForm";
 import { api } from "../../api";
 import { Order } from "../../types";
+import { Datagrid } from "../Datagrid";
 
 const key = ["orders"];
 
@@ -29,8 +29,8 @@ export function Orders() {
   );
 
   const { mutate: deleteOrder } = useMutation(
-    async (invoiceNumber: Pick<Order, "invoiceNumber">) => {
-      await api.deleteOrders(invoiceNumber);
+    async (id: Pick<Order, "id">) => {
+      await api.deleteOrders(id);
     },
     {
       onSuccess: () => {
@@ -45,7 +45,7 @@ export function Orders() {
   };
 
   const deleteHandler = async (order: Order) => {
-    deleteOrder(order);
+    deleteOrder(order.id as Pick<Order, "id">);
   };
 
   const {
@@ -87,8 +87,9 @@ export function Orders() {
           <OrdersForm submitHandler={submitHandler} />
         </div>
       </Modal>
-      <OrdersDatagrid
-        orders={orders}
+      <Datagrid
+        rows={orders}
+        columns={["Date", "Invoice Number", "Weight (Kg)", "Destination"]}
         onSelect={(order) => setSelectedOrder(order)}
       />
       {JSON.stringify(selectedOrder, null, 2)}

@@ -19,20 +19,15 @@ export const postOrders = async (order: Order) => {
   return await response.json();
 };
 
-export const deleteOrders = async (
-  invoiceNumber: Pick<Order, "invoiceNumber">
-) => {
-  const response = await fetch(`${config.apiUrl}/orders/${invoiceNumber}`, {
+export const deleteOrders = async (id: Pick<Order, "id">) => {
+  const response = await fetch(`${config.apiUrl}/orders/${id}`, {
     method: "DELETE",
   });
   return response;
 };
 
-export const putOrders = async (
-  invoiceNumber: Pick<Order, "invoiceNumber">,
-  order: Order
-) => {
-  const response = await fetch(`${config.apiUrl}/orders/${invoiceNumber}`, {
+export const putOrders = async (id: Pick<Order, "id">, order: Order) => {
+  const response = await fetch(`${config.apiUrl}/orders/${id}`, {
     method: "PUT",
     body: JSON.stringify(order),
     headers,

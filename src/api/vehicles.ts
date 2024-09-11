@@ -19,20 +19,18 @@ export const postVehicles = async (vehicle: Vehicle) => {
   return await response.json();
 };
 
-export const deleteVehicles = async (
-  numberPlate: Pick<Vehicle, "numberPlate">
-) => {
-  const response = await fetch(`${config.apiUrl}/vehicles/${numberPlate}`, {
+export const deleteVehicles = async (id: Pick<Vehicle, "id">) => {
+  const response = await fetch(`${config.apiUrl}/vehicles/${id}`, {
     method: "DELETE",
   });
   return response;
 };
 
 export const putVehicles = async (
-  numberPlate: Pick<Vehicle, "numberPlate">,
+  id: Pick<Vehicle, "id">,
   vehicle: Vehicle
 ) => {
-  const response = await fetch(`${config.apiUrl}/vehicles/${numberPlate}`, {
+  const response = await fetch(`${config.apiUrl}/vehicles/${id}`, {
     method: "PUT",
     body: JSON.stringify(vehicle),
     headers,
