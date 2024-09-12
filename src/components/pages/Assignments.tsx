@@ -1,7 +1,7 @@
-import { useQuery } from "react-query";
+import { useMutation, useQuery, useQueryClient } from "react-query";
 import { useState } from "react";
 import { api } from "../../api";
-import { Vehicle, Order } from "../../types";
+import { Vehicle, Order, Shipping } from "../../types";
 import { Datagrid } from "../Datagrid";
 import { Box, Button, Paper, Stack, Typography } from "@mui/material";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
@@ -19,6 +19,31 @@ export function Assignments() {
 
   const { data: vehicles } = useQuery<Vehicle[]>(keyVehicles, api.getVehicles);
   const { data: orders } = useQuery<Order[]>(keyOrders, api.getOrders);
+
+  const queryClient = useQueryClient();
+
+  const { mutate: assignOrder } = useMutation(
+    async (shipping: Shipping) => {
+      await api.postShipping(shipping);
+    },
+    {
+      onSuccess: () => {
+        queryClient.invalidateQueries([keyOrders, keyVehicles]);
+      },
+    }
+  );
+
+  const assignHandler = () => {
+    if (selectedtVehicle || selectedOrder) {
+      const shipping: Shipping = {
+        date: date.toDate().getTime(),
+        vehicleId: selectedtVehicle?.id,
+        orderId: selectedOrder?.id,
+      };
+      assignOrder(shipping);
+      console.log(shipping);
+    }
+  };
   return (
     <>
       <Box component={Paper} sx={{ padding: 2, mb: 2 }}>
@@ -52,18 +77,12 @@ export function Assignments() {
         <Button
           variant="contained"
           color="primary"
-          onClick={() => console.log(selectedOrder, selectedtVehicle)}
+          onClick={assignHandler}
           sx={{ mt: 2 }}
         >
           Assign Order
         </Button>
       )}
-      <br />
-      {JSON.stringify(selectedOrder, null, 2)}
-      <br />
-      {JSON.stringify(selectedtVehicle, null, 2)}
-      <br />
-      {JSON.stringify(date, null, 2)}
     </>
   );
 }

@@ -60,8 +60,8 @@ export function OrdersForm({ submitHandler }: OrdersFormProps) {
         <InputForm
           register={register}
           errors={errors}
-          name="invoiceNumber"
-          label="Invoice Number"
+          name="invoice"
+          label="Invoice"
         />
 
         <InputForm
@@ -69,6 +69,7 @@ export function OrdersForm({ submitHandler }: OrdersFormProps) {
           errors={errors}
           name="weight"
           label="Weight"
+          type="number"
         />
 
         <InputForm

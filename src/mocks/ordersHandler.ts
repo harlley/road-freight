@@ -6,11 +6,7 @@ export const ordersHandler = [
   http.post(`${config.apiUrl}/orders`, async ({ request }) => {
     const orders = JSON.parse(localStorage.getItem("orders") || "[]");
     const newOrder = (await request.json()) as Order;
-    if (
-      orders.find(
-        (order: Order) => order.invoiceNumber === newOrder.invoiceNumber
-      )
-    ) {
+    if (orders.find((order: Order) => order.invoice === newOrder.invoice)) {
       return HttpResponse.json(
         { message: "Order with the same invoice number already exists" },
         { status: 400 }

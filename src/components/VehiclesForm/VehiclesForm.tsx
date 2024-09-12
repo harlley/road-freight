@@ -35,6 +35,7 @@ export function VehiclesForm({ submitHandler }: VehiclesFormProps) {
           errors={errors}
           name="weightCapacity"
           label="Weight Capacity"
+          type="number"
         />
 
         <Button variant="contained" color="primary" type="submit">

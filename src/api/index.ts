@@ -4,6 +4,7 @@ import {
   postVehicles,
   putVehicles,
   deleteVehicles,
+  postShipping,
 } from "./vehicles";
 
 export const api = {
@@ -15,4 +16,5 @@ export const api = {
   postVehicles,
   putVehicles,
   deleteVehicles,
+  postShipping,
 };

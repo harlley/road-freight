@@ -1,5 +1,5 @@
 import { config } from "../config";
-import { Vehicle } from "../types";
+import { Shipping, Vehicle } from "../types";
 
 const headers = {
   "Content-Type": "application/json",
@@ -35,5 +35,17 @@ export const putVehicles = async (
     body: JSON.stringify(vehicle),
     headers,
   });
+  return await response.json();
+};
+
+export const postShipping = async (shipping: Shipping) => {
+  const response = await fetch(
+    `${config.apiUrl}/vehicles/${shipping.vehicleId}/orders`,
+    {
+      method: "POST",
+      body: JSON.stringify(shipping),
+      headers,
+    }
+  );
   return await response.json();
 };

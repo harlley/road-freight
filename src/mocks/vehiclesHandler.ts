@@ -1,6 +1,6 @@
 import { http, HttpResponse } from "msw";
 import { config } from "../config";
-import { Vehicle } from "../types";
+import { Shipping, Vehicle } from "../types";
 
 export const vehiclesHandler = [
   http.post(`${config.apiUrl}/vehicles`, async ({ request }) => {
@@ -55,5 +55,13 @@ export const vehiclesHandler = [
     }
 
     return HttpResponse.json({ message: "Vehicle not found" }, { status: 404 });
+  }),
+
+  http.post(`${config.apiUrl}/vehicles/:id/orders`, async ({ request }) => {
+    const shipping = JSON.parse(localStorage.getItem("shipping") || "[]");
+    const newShipping = (await request.json()) as Shipping;
+    shipping.push({ id: window.crypto.randomUUID(), ...newShipping });
+    localStorage.setItem("shipping", JSON.stringify(shipping));
+    return HttpResponse.json(shipping, { status: 201 });
   }),
 ];

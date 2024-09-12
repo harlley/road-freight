@@ -4,6 +4,7 @@ import {
   FormHelperText,
   InputLabel,
   OutlinedInput,
+  OutlinedInputProps,
   useTheme,
 } from "@mui/material";
 import {
@@ -18,6 +19,7 @@ type InputFormProps<T extends FieldValues> = {
   errors: Partial<Record<Path<T>, FieldError>>;
   name: Path<T>;
   label: string;
+  type?: OutlinedInputProps["type"];
 };
 
 export function InputForm<T extends FieldValues>({
@@ -25,6 +27,7 @@ export function InputForm<T extends FieldValues>({
   errors,
   name,
   label,
+  type = "text",
 }: InputFormProps<T>) {
   const theme = useTheme();
 
@@ -37,6 +40,8 @@ export function InputForm<T extends FieldValues>({
           {...register(name, { required: true })}
           error={!!errors[name]}
           fullWidth
+          inputProps={{ maxLength: 100 }}
+          type={type}
         />
       </FormControl>
       {errors[name] && (

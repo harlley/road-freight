@@ -13,6 +13,12 @@ export interface Vehicle extends Entity {
 export interface Order extends Entity {
   date: string;
   weight: number;
-  invoiceNumber: string;
+  invoice: string;
   destination?: string;
+}
+
+export interface Shipping extends Entity {
+  date: number;
+  vehicleId: string | undefined;
+  orderId: string | undefined;
 }
