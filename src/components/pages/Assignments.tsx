@@ -34,6 +34,7 @@ export function Assignments() {
       <Stack gap={2}>
         <Typography variant="h6">Orders</Typography>
         <Datagrid
+          sticky
           rows={orders}
           columns={["Date", "Invoice Number", "Weight (Kg)", "Destination"]}
           onSelect={(order) => setSelectedtOrder(order)}
@@ -41,6 +42,7 @@ export function Assignments() {
         <Typography variant="h6">Vehicles</Typography>
 
         <Datagrid
+          sticky
           rows={vehicles}
           columns={["Number Plate", "Capacity"]}
           onSelect={(vehicle) => setSelectedVehicle(vehicle)}

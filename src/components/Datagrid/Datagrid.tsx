@@ -9,6 +9,7 @@ import {
   useTheme,
 } from "@mui/material";
 import { useState } from "react";
+import { clsx } from "clsx";
 import styles from "./Datagrid.module.css";
 import { Entity } from "../../types";
 
@@ -16,12 +17,14 @@ type DatagrodProps<T extends Entity> = {
   rows: T[] | undefined;
   columns: string[];
   onSelect: (row: T) => void;
+  sticky?: boolean;
 };
 
 export function Datagrid<T extends Entity>({
   rows,
   columns,
   onSelect,
+  sticky = false,
   ...rest
 }: DatagrodProps<T>) {
   const [select, setSelect] = useState<T | null>(null);
@@ -33,8 +36,12 @@ export function Datagrid<T extends Entity>({
   };
 
   return (
-    <TableContainer component={Paper} {...rest}>
-      <Table>
+    <TableContainer
+      component={Paper}
+      className={clsx(sticky ? styles.tableContainer : null)}
+      {...rest}
+    >
+      <Table stickyHeader>
         <TableHead>
           <TableRow>
             {columns.map((column, index) => (
