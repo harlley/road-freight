@@ -67,7 +67,7 @@ export function Vehicles() {
         variant="contained"
         color="primary"
         onClick={() => setOpenModal(true)}
-        sx={{ marginBottom: 2 }}
+        sx={{ mb: 2 }}
       >
         New Vehicle
       </Button>
@@ -76,7 +76,7 @@ export function Vehicles() {
           variant="contained"
           color="error"
           onClick={() => deleteHandler(selectedOrder)}
-          sx={{ marginBottom: 2, marginLeft: 2 }}
+          sx={{ mb: 2, ml: 2 }}
         >
           Delete
         </Button>

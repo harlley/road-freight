@@ -1,8 +1,10 @@
 import {
+  Box,
   FormControl,
   FormHelperText,
   InputLabel,
   OutlinedInput,
+  useTheme,
 } from "@mui/material";
 import {
   FieldError,
@@ -24,16 +26,24 @@ export function InputForm<T extends FieldValues>({
   name,
   label,
 }: InputFormProps<T>) {
+  const theme = useTheme();
+
   return (
-    <FormControl>
-      <InputLabel {...register(name)}>{label}</InputLabel>
-      <OutlinedInput
-        label={label}
-        {...register(name, { required: true })}
-        error={!!errors[name]}
-        fullWidth
-      />
-      {errors[name] && <FormHelperText>{label} is required</FormHelperText>}
-    </FormControl>
+    <Box sx={{ display: "flex", flexDirection: "column", mb: 2 }}>
+      <FormControl>
+        <InputLabel {...register(name)}>{label}</InputLabel>
+        <OutlinedInput
+          label={label}
+          {...register(name, { required: true })}
+          error={!!errors[name]}
+          fullWidth
+        />
+      </FormControl>
+      {errors[name] && (
+        <FormHelperText sx={{ color: theme.palette.error.main }}>
+          {label} is required
+        </FormHelperText>
+      )}
+    </Box>
   );
 }

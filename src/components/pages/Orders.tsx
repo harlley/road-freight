@@ -68,7 +68,7 @@ export function Orders() {
         variant="contained"
         color="primary"
         onClick={() => setOpenModal(true)}
-        sx={{ marginBottom: 2 }}
+        sx={{ mb: 2 }}
       >
         New Order
       </Button>
@@ -77,7 +77,7 @@ export function Orders() {
           variant="contained"
           color="error"
           onClick={() => deleteHandler(selectedOrder)}
-          sx={{ marginBottom: 2, marginLeft: 2 }}
+          sx={{ mb: 2, ml: 2 }}
         >
           Delete
         </Button>
