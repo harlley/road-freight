@@ -1,6 +1,6 @@
 import { http, HttpResponse } from "msw";
 import { config } from "../config";
-import { Order } from "../types";
+import { Order, Shipping, Vehicle } from "../types";
 
 export const ordersHandler = [
   http.post(`${config.apiUrl}/orders`, async ({ request }) => {
@@ -19,7 +19,24 @@ export const ordersHandler = [
 
   http.get(`${config.apiUrl}/orders`, async () => {
     const orders = JSON.parse(localStorage.getItem("orders") || "[]");
-    return HttpResponse.json(orders);
+    const shipping = JSON.parse(localStorage.getItem("shipping") || "[]");
+    const vehicles = JSON.parse(localStorage.getItem("vehicles") || "[]");
+
+    const ordersWithShipping = orders.map((order: Order) => {
+      const shippingData = shipping.find(
+        (shipping: Shipping) => shipping.orderId === order.id
+      );
+
+      const vehicle: Vehicle = vehicles.find(
+        (vehicle: Vehicle) => vehicle.id === shippingData?.vehicleId
+      );
+      return {
+        ...order,
+        assigned: vehicle ? vehicle.numberPlate : "",
+      };
+    });
+
+    return HttpResponse.json(ordersWithShipping);
   }),
 
   http.delete(`${config.apiUrl}/orders/:id`, async ({ params }) => {

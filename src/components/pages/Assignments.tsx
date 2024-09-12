@@ -28,7 +28,8 @@ export function Assignments() {
     },
     {
       onSuccess: () => {
-        queryClient.invalidateQueries([keyOrders, keyVehicles]);
+        queryClient.invalidateQueries(keyOrders);
+        queryClient.invalidateQueries(keyVehicles);
       },
     }
   );
@@ -41,7 +42,6 @@ export function Assignments() {
         orderId: selectedOrder?.id,
       };
       assignOrder(shipping);
-      console.log(shipping);
     }
   };
   return (
@@ -61,7 +61,13 @@ export function Assignments() {
         <Datagrid
           sticky
           rows={orders}
-          columns={["Date", "Invoice Number", "Weight (Kg)", "Destination"]}
+          columns={[
+            "Date",
+            "Invoice Number",
+            "Weight (Kg)",
+            "Destination",
+            "Assigned",
+          ]}
           onSelect={(order) => setSelectedtOrder(order)}
         />
         <Typography variant="h6">Vehicles</Typography>
@@ -69,7 +75,7 @@ export function Assignments() {
         <Datagrid
           sticky
           rows={vehicles}
-          columns={["Number Plate", "Capacity"]}
+          columns={["Number Plate", "Capacity", "Availability"]}
           onSelect={(vehicle) => setSelectedVehicle(vehicle)}
         />
       </Stack>

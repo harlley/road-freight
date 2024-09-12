@@ -1,6 +1,6 @@
 import { Button, Modal } from "@mui/material";
 import { useQuery } from "react-query";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useMutation, useQueryClient } from "react-query";
 import { SubmitHandler } from "react-hook-form";
 import { OrdersForm } from "../OrdersForm";
@@ -54,6 +54,10 @@ export function Orders() {
     isError,
   } = useQuery<Order[]>(key, api.getOrders);
 
+  useEffect(() => {
+    console.log(orders);
+  }, [orders]);
+
   if (isLoading) {
     return <div>Loading...</div>;
   }
@@ -89,7 +93,13 @@ export function Orders() {
       </Modal>
       <Datagrid
         rows={orders}
-        columns={["Date", "Invoice Number", "Weight (Kg)", "Destination"]}
+        columns={[
+          "Date",
+          "Invoice Number",
+          "Weight (Kg)",
+          "Destination",
+          "Assigned",
+        ]}
         onSelect={(order) => setSelectedOrder(order)}
       />
       {JSON.stringify(selectedOrder, null, 2)}
