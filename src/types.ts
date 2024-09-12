@@ -8,6 +8,7 @@ export interface Entity {
 export interface Vehicle extends Entity {
   numberPlate: string;
   weightCapacity: number;
+  availability?: number;
 }
 
 export interface Order extends Entity {

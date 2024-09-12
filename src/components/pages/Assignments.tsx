@@ -64,17 +64,7 @@ export function Assignments() {
   };
   return (
     <>
-      <Box component={Paper} sx={{ padding: 2, mb: 2 }}>
-        <LocalizationProvider dateAdapter={AdapterDayjs}>
-          <DatePicker
-            label="Date"
-            value={dayjs(date)}
-            onChange={(val) => setDate(dayjs(val))}
-          />
-        </LocalizationProvider>
-      </Box>
-
-      <Stack gap={2}>
+      <Stack gap={2} sx={{ mb: 2 }}>
         <Typography variant="h6">Orders</Typography>
         <Datagrid
           sticky
@@ -97,25 +87,30 @@ export function Assignments() {
           onSelect={(vehicle) => setSelectedVehicle(vehicle)}
         />
       </Stack>
-      {selectedtVehicle && selectedOrder?.assigned === "" && (
-        <Button
-          variant="contained"
-          color="primary"
-          onClick={assignHandler}
-          sx={{ mt: 2 }}
-        >
-          Assign Order
-        </Button>
-      )}
+      <Typography variant="h6">Shipping</Typography>
+
+      <Box component={Paper} sx={{ padding: 2, mb: 2, mt: 2 }}>
+        <LocalizationProvider dateAdapter={AdapterDayjs}>
+          <DatePicker
+            label="Date"
+            value={dayjs(date)}
+            onChange={(val) => setDate(dayjs(val))}
+          />
+        </LocalizationProvider>
+      </Box>
+
+      {selectedtVehicle &&
+        selectedOrder?.assigned === "" &&
+        Number(selectedtVehicle.availability) >
+          Number(selectedOrder.weight) && (
+          <Button variant="contained" color="primary" onClick={assignHandler}>
+            Assign Order to Vehicle
+          </Button>
+        )}
 
       {selectedOrder && selectedOrder?.assigned !== "" && (
-        <Button
-          variant="contained"
-          color="error"
-          onClick={unassignHandler}
-          sx={{ mt: 2 }}
-        >
-          Unassign Order
+        <Button variant="contained" color="error" onClick={unassignHandler}>
+          Unassign Order from Vehicle
         </Button>
       )}
     </>
