@@ -88,7 +88,7 @@ export function Vehicles() {
       </Modal>
       <Datagrid
         rows={vehicles}
-        columns={["Number Plate", "Capacity", "Availability"]}
+        columns={["Number Plate", "Capacity (Kg)", "Availability (Kg)"]}
         onSelect={(order) => setSelectedOrder(order)}
       />
     </>

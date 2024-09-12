@@ -1,4 +1,10 @@
-import { getOrders, postOrders, putOrders, deleteOrders } from "./orders";
+import {
+  getOrders,
+  postOrders,
+  putOrders,
+  deleteOrders,
+  patchOrdersUnsignVehicle,
+} from "./orders";
 import {
   getVehicles,
   postVehicles,
@@ -17,4 +23,5 @@ export const api = {
   putVehicles,
   deleteVehicles,
   postShipping,
+  patchOrdersUnsignVehicle,
 };

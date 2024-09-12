@@ -65,4 +65,25 @@ export const ordersHandler = [
 
     return HttpResponse.json({ message: "Order not found" }, { status: 404 });
   }),
+
+  http.patch(
+    `${config.apiUrl}/orders/:id/unsign-vehicle`,
+    async ({ params }) => {
+      const shipping = JSON.parse(localStorage.getItem("shipping") || "[]");
+      const index = shipping.findIndex(
+        (s: Shipping) => s.orderId === params.id
+      );
+
+      if (index !== -1) {
+        shipping.splice(index, 1);
+        localStorage.setItem("shipping", JSON.stringify(shipping));
+        return HttpResponse.json(undefined, { status: 204 });
+      }
+
+      return HttpResponse.json(
+        { message: "Shipping not found" },
+        { status: 404 }
+      );
+    }
+  ),
 ];

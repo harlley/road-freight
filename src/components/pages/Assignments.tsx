@@ -34,6 +34,18 @@ export function Assignments() {
     }
   );
 
+  const { mutate: unassignOrder } = useMutation(
+    async (orderId: Pick<Order, "id">) => {
+      await api.patchOrdersUnsignVehicle(orderId);
+    },
+    {
+      onSuccess: () => {
+        queryClient.invalidateQueries(keyOrders);
+        queryClient.invalidateQueries(keyVehicles);
+      },
+    }
+  );
+
   const assignHandler = () => {
     if (selectedtVehicle || selectedOrder) {
       const shipping: Shipping = {
@@ -42,6 +54,12 @@ export function Assignments() {
         orderId: selectedOrder?.id,
       };
       assignOrder(shipping);
+    }
+  };
+
+  const unassignHandler = () => {
+    if (selectedOrder) {
+      unassignOrder(selectedOrder.id as Pick<Order, "id">);
     }
   };
   return (
@@ -75,11 +93,11 @@ export function Assignments() {
         <Datagrid
           sticky
           rows={vehicles}
-          columns={["Number Plate", "Capacity", "Availability"]}
+          columns={["Number Plate", "Capacity (Kg)", "Availability (Kg)"]}
           onSelect={(vehicle) => setSelectedVehicle(vehicle)}
         />
       </Stack>
-      {selectedtVehicle && selectedOrder && (
+      {selectedtVehicle && selectedOrder?.assigned === "" && (
         <Button
           variant="contained"
           color="primary"
@@ -87,6 +105,17 @@ export function Assignments() {
           sx={{ mt: 2 }}
         >
           Assign Order
+        </Button>
+      )}
+
+      {selectedOrder && selectedOrder?.assigned !== "" && (
+        <Button
+          variant="contained"
+          color="error"
+          onClick={unassignHandler}
+          sx={{ mt: 2 }}
+        >
+          Unassign Order
         </Button>
       )}
     </>

@@ -34,3 +34,10 @@ export const putOrders = async (id: Pick<Order, "id">, order: Order) => {
   });
   return await response.json();
 };
+
+export const patchOrdersUnsignVehicle = async (id: Pick<Order, "id">) => {
+  const response = await fetch(`${config.apiUrl}/orders/${id}/unsign-vehicle`, {
+    method: "PATCH",
+  });
+  return response;
+};

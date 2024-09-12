@@ -14,7 +14,8 @@ export interface Order extends Entity {
   date: string;
   weight: number;
   invoice: string;
-  destination?: string;
+  destination: string;
+  assigned?: string;
 }
 
 export interface Shipping extends Entity {
