@@ -3,7 +3,7 @@ import { useState } from "react";
 import { api } from "../../api";
 import { Vehicle, Order } from "../../types";
 import { Datagrid } from "../Datagrid";
-import { Button, Stack } from "@mui/material";
+import { Button, Stack, Typography } from "@mui/material";
 
 const keyVehicles = ["vehicles"];
 const keyOrders = ["orders"];
@@ -17,11 +17,14 @@ export function Assignments() {
   return (
     <>
       <Stack gap={2}>
+        <Typography variant="h6">Orders</Typography>
         <Datagrid
           rows={orders}
           columns={["Date", "Invoice Number", "Weight (Kg)", "Destination"]}
           onSelect={(order) => setSelectedtOrder(order)}
         />
+        <Typography variant="h6">Vehicles</Typography>
+
         <Datagrid
           rows={vehicles}
           columns={["Number Plate", "Capacity"]}
