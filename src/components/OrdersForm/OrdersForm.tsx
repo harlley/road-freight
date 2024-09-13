@@ -7,6 +7,7 @@ import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import { InputForm } from "../InputForm";
 import { Order } from "../../types";
 import styles from "../forms.module.css";
+import { AutoCompleteLocale } from "../AutoCompleteLocale";
 
 type OrdersFormProps = {
   submitHandler: SubmitHandler<Order>;
@@ -72,14 +73,20 @@ export function OrdersForm({ submitHandler }: OrdersFormProps) {
           type="number"
         />
 
-        <InputForm
+        <AutoCompleteLocale
           register={register}
           errors={errors}
           name="destination"
           label="Destination"
+          onSelect={(value) => console.log(value)}
         />
 
-        <Button variant="contained" color="primary" type="submit">
+        <Button
+          variant="contained"
+          color="primary"
+          type="submit"
+          sx={{ mt: 4 }}
+        >
           Save
         </Button>
       </form>
