@@ -8,7 +8,7 @@ import {
   TableRow,
   useTheme,
 } from "@mui/material";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { clsx } from "clsx";
 import styles from "./Datagrid.module.css";
 import { Entity } from "../../types";
@@ -16,8 +16,9 @@ import { Entity } from "../../types";
 type DatagrodProps<T extends Entity> = {
   rows: T[] | undefined;
   columns: string[];
-  onSelect: (row: T) => void;
+  onSelect: (row: T | null) => void;
   sticky?: boolean;
+  selectedRow?: T | null;
 };
 
 export function Datagrid<T extends Entity>({
@@ -25,15 +26,22 @@ export function Datagrid<T extends Entity>({
   columns,
   onSelect,
   sticky = false,
+  selectedRow,
   ...rest
 }: DatagrodProps<T>) {
-  const [select, setSelect] = useState<T | null>(null);
+  const [select, setSelect] = useState<T | null>(selectedRow || null);
   const theme = useTheme();
 
   const selectHandler = (row: T) => {
-    setSelect(row);
-    onSelect(row);
+    const isSelected = select?.id === row.id;
+    const newSelect = isSelected ? null : row;
+    setSelect(newSelect);
+    onSelect(newSelect);
   };
+
+  useEffect(() => {
+    setSelect(selectedRow ?? null);
+  }, [selectedRow]);
 
   return (
     <TableContainer

@@ -1,5 +1,5 @@
 import { useMutation, useQuery, useQueryClient } from "react-query";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { api } from "../../api";
 import { Vehicle, Order, Shipping } from "../../types";
 import { Datagrid } from "../Datagrid";
@@ -14,8 +14,8 @@ const keyOrders = ["orders"];
 
 export function Assignments() {
   const [date, setDate] = useState<Dayjs>(dayjs());
-  const [selectedtVehicle, setSelectedVehicle] = useState<Vehicle>();
-  const [selectedOrder, setSelectedtOrder] = useState<Order>();
+  const [selectedtVehicle, setSelectedVehicle] = useState<Vehicle | null>();
+  const [selectedOrder, setSelectedtOrder] = useState<Order | null>();
 
   const { data: vehicles } = useQuery<Vehicle[]>(keyVehicles, api.getVehicles);
   const { data: orders } = useQuery<Order[]>(keyOrders, api.getOrders);
@@ -54,14 +54,21 @@ export function Assignments() {
         orderId: selectedOrder?.id,
       };
       assignOrder(shipping);
+      setSelectedtOrder(null);
     }
   };
 
   const unassignHandler = () => {
     if (selectedOrder) {
       unassignOrder(selectedOrder.id as Pick<Order, "id">);
+      setSelectedtOrder(null);
     }
   };
+
+  useEffect(() => {
+    setSelectedVehicle(null);
+  }, [selectedOrder]);
+
   return (
     <>
       <Stack gap={2} sx={{ mb: 2 }}>
@@ -77,6 +84,7 @@ export function Assignments() {
             "Assigned",
           ]}
           onSelect={(order) => setSelectedtOrder(order)}
+          selectedRow={selectedOrder}
         />
         <Typography variant="h6">Vehicles</Typography>
 
@@ -85,6 +93,7 @@ export function Assignments() {
           rows={vehicles}
           columns={["Number Plate", "Capacity (Kg)", "Availability (Kg)"]}
           onSelect={(vehicle) => setSelectedVehicle(vehicle)}
+          selectedRow={selectedtVehicle}
         />
       </Stack>
       <Typography variant="h6">Shipping</Typography>
@@ -101,7 +110,7 @@ export function Assignments() {
 
       {selectedtVehicle &&
         selectedOrder?.assigned === "" &&
-        Number(selectedtVehicle.availability) >
+        Number(selectedtVehicle.availability) >=
           Number(selectedOrder.weight) && (
           <Button variant="contained" color="primary" onClick={assignHandler}>
             Assign Order to Vehicle
