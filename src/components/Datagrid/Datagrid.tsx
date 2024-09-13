@@ -71,7 +71,9 @@ export function Datagrid<T extends Entity>({
               }}
             >
               {Object.keys(row).map((column, index) =>
-                column !== "id" ? (
+                column !== "id" &&
+                column !== "latitude" &&
+                column !== "longitude" ? (
                   <TableCell key={index}>{row[column]}</TableCell>
                 ) : null
               )}

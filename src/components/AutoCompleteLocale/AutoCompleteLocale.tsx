@@ -78,6 +78,7 @@ export function AutoCompleteLocale<T extends FieldValues>({
         freeSolo
         options={options}
         inputValue={inputValue}
+        filterOptions={(x) => x}
         onInputChange={(_, value) => {
           setInputValue(value);
           debouncedFetchSuggestions(value);
@@ -90,7 +91,7 @@ export function AutoCompleteLocale<T extends FieldValues>({
         renderInput={(params) => (
           <TextField
             {...params}
-            {...register(name)}
+            {...register(name, { required: true })}
             label="Destination"
             variant="outlined"
             error={!!errors[name]}

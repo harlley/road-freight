@@ -54,10 +54,6 @@ export function Orders() {
     isError,
   } = useQuery<Order[]>(key, api.getOrders);
 
-  useEffect(() => {
-    console.log(orders);
-  }, [orders]);
-
   if (isLoading) {
     return <div>Loading...</div>;
   }

@@ -8,19 +8,51 @@ import { InputForm } from "../InputForm";
 import { Order } from "../../types";
 import styles from "../forms.module.css";
 import { AutoCompleteLocale } from "../AutoCompleteLocale";
+import { useEffect, useState } from "react";
+import { config } from "../../config";
 
 type OrdersFormProps = {
   submitHandler: SubmitHandler<Order>;
 };
 
 export function OrdersForm({ submitHandler }: OrdersFormProps) {
+  const [latitude, setLatitude] = useState<string>("");
+  const [longitude, setLongitude] = useState<string>("");
+  const [locale, setLocale] = useState<string>("");
+
   const theme = useTheme();
   const {
     control,
     register,
     handleSubmit,
+    watch,
     formState: { errors },
   } = useForm<Order>();
+
+  useEffect(() => {
+    const fetchCoordinates = async () => {
+      if (!locale) return;
+
+      try {
+        const response = await fetch(
+          `${config.here.lookup}?id=${locale.id}&apiKey=${config.here.apiKey}`
+        );
+        if (!response.ok) {
+          throw new Error("Failed to fetch");
+        }
+        const data = await response.json();
+        console.log("lookup", data);
+        console.log("position", data?.position.lat, data?.position.lng);
+        setLatitude(data?.position.lat);
+        setLongitude(data?.position.lng);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+    fetchCoordinates();
+  }, [locale]);
+
+  const watchCoordinates = watch(["latitude", "longitude"]);
 
   return (
     <Box className={styles.root}>
@@ -78,8 +110,15 @@ export function OrdersForm({ submitHandler }: OrdersFormProps) {
           errors={errors}
           name="destination"
           label="Destination"
-          onSelect={(value) => console.log(value)}
+          onSelect={(value) => setLocale(value)}
         />
+
+        {latitude && longitude && (
+          <>
+            <input type="text" {...register("latitude")} value={latitude} />
+            <input type="text" {...register("longitude")} value={longitude} />
+          </>
+        )}
 
         <Button
           variant="contained"
@@ -89,6 +128,8 @@ export function OrdersForm({ submitHandler }: OrdersFormProps) {
         >
           Save
         </Button>
+
+        {JSON.stringify(locale)}
       </form>
     </Box>
   );

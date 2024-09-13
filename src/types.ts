@@ -17,6 +17,8 @@ export interface Order extends Entity {
   invoice: string;
   destination: string;
   assigned?: string;
+  latitude: string;
+  longitude: string;
 }
 
 export interface Shipping extends Entity {
