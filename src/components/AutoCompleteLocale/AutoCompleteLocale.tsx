@@ -14,7 +14,7 @@ import { useAutocompleteLocale } from "./useAutoCompleteLocale";
 import { Coordinates, Suggestion } from "../../types";
 
 interface AutoCompleteLocaleProps<T extends FieldValues> {
-  onSelect: (value: Coordinates) => void;
+  onSelect?: (value: Coordinates) => void;
   register: UseFormRegister<T>;
   name: Path<T>;
   errors: Partial<Record<string, FieldError>>;
@@ -22,7 +22,7 @@ interface AutoCompleteLocaleProps<T extends FieldValues> {
 }
 
 export function AutoCompleteLocale<T extends FieldValues>({
-  onSelect,
+  // onSelect,
   register,
   name,
   errors,
@@ -36,7 +36,9 @@ export function AutoCompleteLocale<T extends FieldValues>({
     setInputValue,
     setLocale,
     debouncedFetchSuggestions,
-  } = useAutocompleteLocale(onSelect);
+    latitude,
+    longitude,
+  } = useAutocompleteLocale();
 
   const onChangeHandler = (
     _: React.SyntheticEvent<Element, Event>,
@@ -76,6 +78,20 @@ export function AutoCompleteLocale<T extends FieldValues>({
         <FormHelperText sx={{ color: theme.palette.error.main }}>
           {label} is required
         </FormHelperText>
+      )}
+      {latitude && longitude && (
+        <>
+          <input
+            type="hidden"
+            {...register(`latitude` as Path<T>)}
+            value={latitude}
+          />
+          <input
+            type="hidden"
+            {...register(`longitude` as Path<T>)}
+            value={longitude}
+          />
+        </>
       )}
     </>
   );

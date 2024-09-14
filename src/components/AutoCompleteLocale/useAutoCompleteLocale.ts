@@ -1,12 +1,14 @@
 import { useState, useMemo, useEffect } from "react";
 import debounce from "lodash.debounce";
 import { config } from "../../config";
-import { Coordinates, Suggestion, SuggestionItem } from "../../types";
+import { Suggestion, SuggestionItem } from "../../types";
 
-export function useAutocompleteLocale(onSelect: (value: Coordinates) => void) {
+export function useAutocompleteLocale() {
   const [options, setOptions] = useState<Suggestion[]>([]);
   const [inputValue, setInputValue] = useState<string>("");
   const [locale, setLocale] = useState<Suggestion | null | string>(null);
+  const [latitude, setLatitude] = useState<string>("");
+  const [longitude, setLongitude] = useState<string>("");
 
   const fetchSuggestions = async (query: string) => {
     if (!query) return;
@@ -55,13 +57,16 @@ export function useAutocompleteLocale(onSelect: (value: Coordinates) => void) {
         const data = await response.json();
         const latitude = data?.position.lat;
         const longitude = data?.position.lng;
-        onSelect({ latitude, longitude });
+        setLatitude(latitude);
+        setLongitude(longitude);
+        //setCoordinates({ latitude, longitude });
+        //onSelect({ latitude, longitude });
       } catch (error) {
         console.error(error);
       }
     };
     fetchCoordinates();
-  }, [locale, onSelect]);
+  }, [locale]);
 
   return {
     options,
@@ -69,5 +74,7 @@ export function useAutocompleteLocale(onSelect: (value: Coordinates) => void) {
     setInputValue,
     setLocale,
     debouncedFetchSuggestions,
+    latitude,
+    longitude,
   };
 }

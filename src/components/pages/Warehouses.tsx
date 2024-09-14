@@ -3,23 +3,24 @@ import { useQuery } from "react-query";
 import { useState } from "react";
 import { useMutation, useQueryClient } from "react-query";
 import { SubmitHandler } from "react-hook-form";
-import { VehiclesForm } from "../VehiclesForm";
+import { WarehousesForm } from "../WarehousesForm";
 import { api } from "../../api";
-import { Vehicle } from "../../types";
+import { Warehouse } from "../../types";
 import { Datagrid } from "../Datagrid";
 
-const key = ["vehicles"];
+const key = ["warehouses"];
 
-export function Vehicles() {
+export function Warehouses() {
   const [openModal, setOpenModal] = useState(false);
-  const [selectedOrder, setSelectedOrder] = useState<Vehicle | null>();
+  const [selectedWarehouse, setSelectedWarehouse] =
+    useState<Warehouse | null>();
 
   const queryClient = useQueryClient();
 
-  const { mutate: createVehicle } = useMutation(
+  const { mutate: createWarehouse } = useMutation(
     key,
-    async (vehicle: Vehicle) => {
-      await api.postVehicles(vehicle);
+    async (warehouse: Warehouse) => {
+      await api.postWarehouses(warehouse);
     },
     {
       onSuccess: () => {
@@ -29,9 +30,9 @@ export function Vehicles() {
     }
   );
 
-  const { mutate: deleteVehicle } = useMutation(
-    async (vehicle: Vehicle) => {
-      await api.deleteVehicles(vehicle.id as Pick<Vehicle, "id">);
+  const { mutate: deleteWarehouse } = useMutation(
+    async (warehouse: Warehouse) => {
+      await api.deleteWarehouses(warehouse.id as Pick<Warehouse, "id">);
     },
     {
       onSuccess: () => {
@@ -41,17 +42,17 @@ export function Vehicles() {
     }
   );
 
-  const submitHandler: SubmitHandler<Vehicle> = async (vehicle) => {
-    createVehicle(vehicle);
+  const submitHandler: SubmitHandler<Warehouse> = async (warehouse) => {
+    createWarehouse(warehouse);
   };
-  const deleteHandler = async (vehicle: Vehicle) => {
-    deleteVehicle(vehicle);
+  const deleteHandler = async (warehouse: Warehouse) => {
+    deleteWarehouse(warehouse);
   };
   const {
-    data: vehicles,
+    data: warehouses,
     isLoading,
     isError,
-  } = useQuery<Vehicle[]>(key, api.getVehicles);
+  } = useQuery<Warehouse[]>(key, api.getWarehouses);
 
   if (isLoading) {
     return <div>Loading...</div>;
@@ -69,13 +70,13 @@ export function Vehicles() {
         onClick={() => setOpenModal(true)}
         sx={{ mb: 2 }}
       >
-        New Vehicle
+        New Warehouse
       </Button>
-      {selectedOrder && (
+      {selectedWarehouse && (
         <Button
           variant="contained"
           color="error"
-          onClick={() => deleteHandler(selectedOrder)}
+          onClick={() => deleteHandler(selectedWarehouse)}
           sx={{ mb: 2, ml: 2 }}
         >
           Delete
@@ -83,13 +84,13 @@ export function Vehicles() {
       )}
       <Modal open={openModal} onClose={() => setOpenModal(false)}>
         <div>
-          <VehiclesForm submitHandler={submitHandler} />
+          <WarehousesForm submitHandler={submitHandler} />
         </div>
       </Modal>
       <Datagrid
-        rows={vehicles}
-        columns={["Number Plate", "Capacity (Kg)", "Availability (Kg)"]}
-        onSelect={(order) => setSelectedOrder(order)}
+        rows={warehouses}
+        columns={["Name", "Address"]}
+        onSelect={(order) => setSelectedWarehouse(order)}
       />
     </>
   );

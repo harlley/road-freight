@@ -25,10 +25,10 @@ export function Layout() {
         <List className={styles.menu}>
           <ListItemButton
             component={Link}
-            href="/orders"
-            selected={location.pathname === "/orders"}
+            href="/warehouses"
+            selected={location.pathname === "/warehouses"}
           >
-            <ListItemText primary="Orders" />
+            <ListItemText primary="Warehouses" />
           </ListItemButton>
           <ListItemButton
             component={Link}
@@ -36,6 +36,13 @@ export function Layout() {
             selected={location.pathname === "/vehicles"}
           >
             <ListItemText primary="Vehicles" />
+          </ListItemButton>
+          <ListItemButton
+            component={Link}
+            href="/orders"
+            selected={location.pathname === "/orders"}
+          >
+            <ListItemText primary="Orders" />
           </ListItemButton>
           <ListItemButton
             component={Link}

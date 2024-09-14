@@ -2,43 +2,48 @@ import Typography from "@mui/material/Typography";
 import { Box, Button } from "@mui/material";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { InputForm } from "../InputForm";
-import { Vehicle } from "../../types";
+import { Warehouse } from "../../types";
 import styles from "../forms.module.css";
+import { AutoCompleteLocale } from "../AutoCompleteLocale";
 
-type VehiclesFormProps = {
-  submitHandler: SubmitHandler<Vehicle>;
+type WarehousesFormProps = {
+  submitHandler: SubmitHandler<Warehouse>;
 };
 
-export function VehiclesForm({ submitHandler }: VehiclesFormProps) {
+export function WarehousesForm({ submitHandler }: WarehousesFormProps) {
   const {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm<Vehicle>();
+  } = useForm<Warehouse>();
 
   return (
     <Box className={styles.root}>
       <form onSubmit={handleSubmit(submitHandler)} noValidate>
         <Typography variant="h6" component="h2" sx={{ mb: 2 }}>
-          New Vehicle
+          New Warehouse
         </Typography>
 
         <InputForm
           register={register}
           errors={errors}
-          name="numberPlate"
-          label="Number Plate"
+          name="name"
+          label="Name"
         />
 
-        <InputForm
+        <AutoCompleteLocale
           register={register}
           errors={errors}
-          name="weightCapacity"
-          label="Weight Capacity"
-          type="number"
+          name="address"
+          label="Address"
         />
 
-        <Button variant="contained" color="primary" type="submit">
+        <Button
+          variant="contained"
+          color="primary"
+          type="submit"
+          sx={{ mt: 2 }}
+        >
           Save
         </Button>
       </form>

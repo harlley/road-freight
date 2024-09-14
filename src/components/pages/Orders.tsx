@@ -1,6 +1,6 @@
 import { Button, Modal } from "@mui/material";
 import { useQuery } from "react-query";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useMutation, useQueryClient } from "react-query";
 import { SubmitHandler } from "react-hook-form";
 import { OrdersForm } from "../OrdersForm";
@@ -12,7 +12,7 @@ const key = ["orders"];
 
 export function Orders() {
   const [openModal, setOpenModal] = useState(false);
-  const [selectedOrder, setSelectedOrder] = useState<Order>();
+  const [selectedOrder, setSelectedOrder] = useState<Order | null>();
 
   const queryClient = useQueryClient();
 

@@ -6,6 +6,7 @@ import {
   Error,
   Assignments,
 } from "./components/pages";
+import { Warehouses } from "./components/pages/Warehouses";
 
 export const router = createBrowserRouter([
   {
@@ -28,6 +29,10 @@ export const router = createBrowserRouter([
       {
         path: "assignments",
         element: <Assignments />,
+      },
+      {
+        path: "warehouses",
+        element: <Warehouses />,
       },
     ],
   },

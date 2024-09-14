@@ -1,9 +1,6 @@
+import { headers } from ".";
 import { config } from "../config";
 import { Order } from "../types";
-
-const headers = {
-  "Content-Type": "application/json",
-};
 
 export const getOrders = async () => {
   const response = await fetch(`${config.apiUrl}/orders`);

@@ -8,15 +8,15 @@ import { InputForm } from "../InputForm";
 import { Order } from "../../types";
 import styles from "../forms.module.css";
 import { AutoCompleteLocale } from "../AutoCompleteLocale";
-import { useState } from "react";
+// import { useState } from "react";
 
 type OrdersFormProps = {
   submitHandler: SubmitHandler<Order>;
 };
 
 export function OrdersForm({ submitHandler }: OrdersFormProps) {
-  const [latitude, setLatitude] = useState<string>("");
-  const [longitude, setLongitude] = useState<string>("");
+  // const [latitude, setLatitude] = useState<string>("");
+  // const [longitude, setLongitude] = useState<string>("");
 
   const theme = useTheme();
 
@@ -83,24 +83,13 @@ export function OrdersForm({ submitHandler }: OrdersFormProps) {
           errors={errors}
           name="destination"
           label="Destination"
-          onSelect={(value) => {
-            setLatitude(value.latitude);
-            setLongitude(value.longitude);
-          }}
         />
-
-        {latitude && longitude && (
-          <>
-            <input type="hidden" {...register("latitude")} value={latitude} />
-            <input type="hidden" {...register("longitude")} value={longitude} />
-          </>
-        )}
 
         <Button
           variant="contained"
           color="primary"
           type="submit"
-          sx={{ mt: 4 }}
+          sx={{ mt: 2 }}
         >
           Save
         </Button>

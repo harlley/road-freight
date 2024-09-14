@@ -30,6 +30,11 @@ export interface Shipping extends Entity {
   orderId: string | undefined;
 }
 
+export interface Warehouse extends Entity, Coordinates {
+  name: string;
+  address: string;
+}
+
 export interface Suggestion {
   label: string;
   id: string;
