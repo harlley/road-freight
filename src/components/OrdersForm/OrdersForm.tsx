@@ -25,7 +25,6 @@ export function OrdersForm({ submitHandler }: OrdersFormProps) {
     control,
     register,
     handleSubmit,
-    watch,
     formState: { errors },
   } = useForm<Order>();
 
@@ -41,8 +40,6 @@ export function OrdersForm({ submitHandler }: OrdersFormProps) {
           throw new Error("Failed to fetch");
         }
         const data = await response.json();
-        console.log("lookup", data);
-        console.log("position", data?.position.lat, data?.position.lng);
         setLatitude(data?.position.lat);
         setLongitude(data?.position.lng);
       } catch (error) {
@@ -51,8 +48,6 @@ export function OrdersForm({ submitHandler }: OrdersFormProps) {
     };
     fetchCoordinates();
   }, [locale]);
-
-  const watchCoordinates = watch(["latitude", "longitude"]);
 
   return (
     <Box className={styles.root}>
@@ -115,8 +110,8 @@ export function OrdersForm({ submitHandler }: OrdersFormProps) {
 
         {latitude && longitude && (
           <>
-            <input type="text" {...register("latitude")} value={latitude} />
-            <input type="text" {...register("longitude")} value={longitude} />
+            <input type="hidden" {...register("latitude")} value={latitude} />
+            <input type="hidden" {...register("longitude")} value={longitude} />
           </>
         )}
 
@@ -128,8 +123,6 @@ export function OrdersForm({ submitHandler }: OrdersFormProps) {
         >
           Save
         </Button>
-
-        {JSON.stringify(locale)}
       </form>
     </Box>
   );
