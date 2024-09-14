@@ -7,6 +7,7 @@ import {
   Assignments,
 } from "./components/pages";
 import { Warehouses } from "./components/pages/Warehouses";
+import { Routes } from "./components/pages/Routes";
 
 export const router = createBrowserRouter([
   {
@@ -33,6 +34,10 @@ export const router = createBrowserRouter([
       {
         path: "warehouses",
         element: <Warehouses />,
+      },
+      {
+        path: "routes",
+        element: <Routes />,
       },
     ],
   },

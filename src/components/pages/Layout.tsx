@@ -51,6 +51,13 @@ export function Layout() {
           >
             <ListItemText primary="Assignments" />
           </ListItemButton>
+          <ListItemButton
+            component={Link}
+            href="/routes"
+            selected={location.pathname === "/routes"}
+          >
+            <ListItemText primary="Routes" />
+          </ListItemButton>
         </List>
       </Drawer>
       <Box component="main" className={styles.main}>
