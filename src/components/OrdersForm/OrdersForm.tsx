@@ -8,8 +8,7 @@ import { InputForm } from "../InputForm";
 import { Order } from "../../types";
 import styles from "../forms.module.css";
 import { AutoCompleteLocale } from "../AutoCompleteLocale";
-import { useEffect, useState } from "react";
-import { config } from "../../config";
+import { useState } from "react";
 
 type OrdersFormProps = {
   submitHandler: SubmitHandler<Order>;
@@ -18,36 +17,15 @@ type OrdersFormProps = {
 export function OrdersForm({ submitHandler }: OrdersFormProps) {
   const [latitude, setLatitude] = useState<string>("");
   const [longitude, setLongitude] = useState<string>("");
-  const [locale, setLocale] = useState<string>("");
 
   const theme = useTheme();
+
   const {
     control,
     register,
     handleSubmit,
     formState: { errors },
   } = useForm<Order>();
-
-  useEffect(() => {
-    const fetchCoordinates = async () => {
-      if (!locale) return;
-
-      try {
-        const response = await fetch(
-          `${config.here.lookup}?id=${locale.id}&apiKey=${config.here.apiKey}`
-        );
-        if (!response.ok) {
-          throw new Error("Failed to fetch");
-        }
-        const data = await response.json();
-        setLatitude(data?.position.lat);
-        setLongitude(data?.position.lng);
-      } catch (error) {
-        console.error(error);
-      }
-    };
-    fetchCoordinates();
-  }, [locale]);
 
   return (
     <Box className={styles.root}>
@@ -105,7 +83,10 @@ export function OrdersForm({ submitHandler }: OrdersFormProps) {
           errors={errors}
           name="destination"
           label="Destination"
-          onSelect={(value) => setLocale(value)}
+          onSelect={(value) => {
+            setLatitude(value.latitude);
+            setLongitude(value.longitude);
+          }}
         />
 
         {latitude && longitude && (

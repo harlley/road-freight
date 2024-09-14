@@ -5,24 +5,36 @@ export interface Entity {
   [key: string]: string | ReactNode;
 }
 
+export interface Coordinates {
+  latitude: string;
+  longitude: string;
+}
+
 export interface Vehicle extends Entity {
   numberPlate: string;
   weightCapacity: number;
   availability?: number;
 }
 
-export interface Order extends Entity {
+export interface Order extends Entity, Coordinates {
   date: string;
   weight: number;
   invoice: string;
   destination: string;
   assigned?: string;
-  latitude: string;
-  longitude: string;
 }
 
 export interface Shipping extends Entity {
   date: number;
   vehicleId: string | undefined;
   orderId: string | undefined;
+}
+
+export interface Suggestion {
+  label: string;
+  id: string;
+}
+export interface SuggestionItem {
+  title: string;
+  id: string;
 }

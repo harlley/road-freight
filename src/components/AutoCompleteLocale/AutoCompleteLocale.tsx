@@ -1,31 +1,20 @@
-import { useState, useMemo } from "react";
 import {
   TextField,
   Autocomplete,
   FormHelperText,
   useTheme,
 } from "@mui/material";
-import debounce from "lodash.debounce";
-import { config } from "../../config";
 import {
   UseFormRegister,
   FieldValues,
   Path,
   FieldError,
 } from "react-hook-form";
-
-interface Suggestion {
-  label: string;
-  id: string;
-}
-
-interface SuggestionItem {
-  title: string;
-  id: string;
-}
+import { useAutocompleteLocale } from "./useAutoCompleteLocale";
+import { Coordinates, Suggestion } from "../../types";
 
 interface AutoCompleteLocaleProps<T extends FieldValues> {
-  onSelect: (value: Suggestion | null) => void;
+  onSelect: (value: Coordinates) => void;
   register: UseFormRegister<T>;
   name: Path<T>;
   errors: Partial<Record<string, FieldError>>;
@@ -39,38 +28,30 @@ export function AutoCompleteLocale<T extends FieldValues>({
   errors,
   label,
 }: AutoCompleteLocaleProps<T>) {
-  const [options, setOptions] = useState<Suggestion[]>([]);
-  const [inputValue, setInputValue] = useState<string>("");
   const theme = useTheme();
 
-  async function fetchSuggestions(query: string): Promise<void> {
-    if (!query) return;
+  const {
+    options,
+    inputValue,
+    setInputValue,
+    setLocale,
+    debouncedFetchSuggestions,
+  } = useAutocompleteLocale(onSelect);
 
-    const url = `${config.here.autocomplete}?q=${query}&apiKey=${config.here.apiKey}&limit=20`;
+  const onChangeHandler = (
+    _: React.SyntheticEvent<Element, Event>,
+    value: string | Suggestion | null
+  ) => {
+    setLocale(value);
+  };
 
-    try {
-      const response = await fetch(url);
-      if (!response.ok) {
-        throw new Error("Failed to fetch");
-      }
-
-      const data = await response.json();
-      const suggestions: Suggestion[] = data.items.map(
-        (item: SuggestionItem) => ({
-          label: item.title,
-          id: item.id,
-        })
-      );
-      setOptions(suggestions);
-    } catch (error) {
-      console.error("Error fetching suggestions:", error);
-    }
-  }
-
-  const debouncedFetchSuggestions = useMemo(
-    () => debounce(fetchSuggestions, 500),
-    []
-  );
+  const onInputChangeHandler = (
+    _: React.SyntheticEvent<Element, Event>,
+    value: string
+  ) => {
+    setInputValue(value);
+    debouncedFetchSuggestions(value);
+  };
 
   return (
     <>
@@ -79,20 +60,13 @@ export function AutoCompleteLocale<T extends FieldValues>({
         options={options}
         inputValue={inputValue}
         filterOptions={(x) => x}
-        onInputChange={(_, value) => {
-          setInputValue(value);
-          debouncedFetchSuggestions(value);
-        }}
-        onChange={(_, newValue) => {
-          if (onSelect) {
-            onSelect(newValue as Suggestion);
-          }
-        }}
+        onInputChange={onInputChangeHandler}
+        onChange={onChangeHandler}
         renderInput={(params) => (
           <TextField
             {...params}
             {...register(name, { required: true })}
-            label="Destination"
+            label={label}
             variant="outlined"
             error={!!errors[name]}
           />
