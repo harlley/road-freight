@@ -1,3 +1,4 @@
+import { headers } from "../api";
 import { config } from "../config";
 import { Order, Warehouse } from "../types";
 
@@ -40,16 +41,11 @@ export async function calculateRoutes(warehouse: Warehouse, orders: Order[]) {
     return { lat: Number(latitude), lng: Number(longitude) };
   });
 
-  console.log("warehouse", warehouseCoordinates);
-  console.log("ordersCoordinates", ordersCoordinates);
-
   const response = fetch(
     `${config.here.matrixRouter}?apiKey=${config.here.apiKey}&async=false`,
     {
       method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
+      headers,
       body: JSON.stringify({
         origins: [warehouseCoordinates, ...ordersCoordinates],
         destinations: [warehouseCoordinates, ...ordersCoordinates],
