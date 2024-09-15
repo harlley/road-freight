@@ -14,6 +14,8 @@ export function Vehicles() {
   const [openModal, setOpenModal] = useState(false);
   const [selectedOrder, setSelectedOrder] = useState<Vehicle | null>();
 
+  const { data: vehicles } = useQuery<Vehicle[]>(key, api.getVehicles);
+
   const queryClient = useQueryClient();
 
   const { mutate: createVehicle } = useMutation(
@@ -44,22 +46,10 @@ export function Vehicles() {
   const submitHandler: SubmitHandler<Vehicle> = async (vehicle) => {
     createVehicle(vehicle);
   };
+
   const deleteHandler = async (vehicle: Vehicle) => {
     deleteVehicle(vehicle);
   };
-  const {
-    data: vehicles,
-    isLoading,
-    isError,
-  } = useQuery<Vehicle[]>(key, api.getVehicles);
-
-  if (isLoading) {
-    return <div>Loading...</div>;
-  }
-
-  if (isError) {
-    return <div>Error</div>;
-  }
 
   return (
     <>
@@ -71,6 +61,7 @@ export function Vehicles() {
       >
         New Vehicle
       </Button>
+
       {selectedOrder && (
         <Button
           variant="contained"
@@ -81,15 +72,18 @@ export function Vehicles() {
           Delete
         </Button>
       )}
+
       <Modal open={openModal} onClose={() => setOpenModal(false)}>
         <div>
           <VehiclesForm submitHandler={submitHandler} />
         </div>
       </Modal>
+
       <Datagrid
         rows={vehicles}
-        columns={["Number Plate", "Capacity (Kg)", "Availability (Kg)"]}
+        columns={["Number Plate", "Capacity (Kg)"]}
         onSelect={(order) => setSelectedOrder(order)}
+        hiddenColumns={["availability", "id"]}
       />
     </>
   );

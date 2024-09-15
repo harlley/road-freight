@@ -8,6 +8,7 @@ import { ReactQueryDevtools } from "react-query/devtools";
 const queryClient = new QueryClient();
 
 async function enableMocking() {
+  // commented to mock the api in production
   // if (process.env.NODE_ENV !== "development") {
   //   return;
   // }

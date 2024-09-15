@@ -58,13 +58,13 @@ export async function calculateRoutes(warehouse: Warehouse, orders: Order[]) {
     }
   );
 
-  const result = await (await response).json();
-  const distances = result.matrix.distances;
+  const data = await (await response).json();
 
+  const distances = data.matrix.distances;
+
+  // convert a flat array to a matrix
   const matrix: number[][] = [];
-
   const columns = Math.sqrt(distances.length);
-
   for (let i = 0; i < distances.length; i += columns) {
     matrix.push(distances.slice(i, i + columns));
   }

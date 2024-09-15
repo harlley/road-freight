@@ -38,14 +38,8 @@ export function Routes() {
     null
   );
 
-  const warehouseChangeHandler = (event: SelectChangeEvent<string>) => {
-    const selectedWarehouse = warehouses?.find(
-      (warehouse) => warehouse.id === event.target.value
-    );
-    setSelectedWarehouse(selectedWarehouse || null);
-  };
-
   const { data: vehicles } = useQuery<Vehicle[]>(keyVehicles, api.getVehicles);
+
   const { data: orders } = useQuery<Order[]>(
     keyVehiclesOrders,
     () =>
@@ -89,6 +83,13 @@ export function Routes() {
     }
   );
 
+  const warehouseChangeHandler = (event: SelectChangeEvent<string>) => {
+    const selectedWarehouse = warehouses?.find(
+      (warehouse) => warehouse.id === event.target.value
+    );
+    setSelectedWarehouse(selectedWarehouse || null);
+  };
+
   const calculateRoutesHandler = async () => {
     const path = await calculateRoutes(selectedWarehouse!, orders!);
     const pathWithoutWarehouse = path.slice(1);
@@ -109,10 +110,9 @@ export function Routes() {
         </LocalizationProvider>
 
         <FormControl fullWidth sx={{ ml: 2 }}>
-          <InputLabel id="demo-simple-select-label">Origin</InputLabel>
+          <InputLabel id="origin">Origin</InputLabel>
           <Select
-            labelId="demo-simple-select-label"
-            id="demo-simple-select"
+            labelId="origin"
             value={selectedWarehouse?.id ?? ""}
             label="Origin"
             onChange={warehouseChangeHandler}
@@ -132,6 +132,7 @@ export function Routes() {
           sticky
           rows={vehicles}
           columns={["Number Plate", "Capacity (Kg)", "Availability (Kg)"]}
+          hiddenColumns={["id"]}
           onSelect={(vehicle) => setSelectedVehicle(vehicle)}
           selectedRow={selectedVehicle}
         />
@@ -151,6 +152,7 @@ export function Routes() {
                 "Assigned",
               ]}
               onSelect={(order) => setSelectedtOrder(order)}
+              hiddenColumns={["latitude", "longitude", "id"]}
               selectedRow={selectedOrder}
               selectable={false}
             />

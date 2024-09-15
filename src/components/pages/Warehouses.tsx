@@ -15,6 +15,8 @@ export function Warehouses() {
   const [selectedWarehouse, setSelectedWarehouse] =
     useState<Warehouse | null>();
 
+  const { data: warehouses } = useQuery<Warehouse[]>(key, api.getWarehouses);
+
   const queryClient = useQueryClient();
 
   const { mutate: createWarehouse } = useMutation(
@@ -45,22 +47,10 @@ export function Warehouses() {
   const submitHandler: SubmitHandler<Warehouse> = async (warehouse) => {
     createWarehouse(warehouse);
   };
+
   const deleteHandler = async (warehouse: Warehouse) => {
     deleteWarehouse(warehouse);
   };
-  const {
-    data: warehouses,
-    isLoading,
-    isError,
-  } = useQuery<Warehouse[]>(key, api.getWarehouses);
-
-  if (isLoading) {
-    return <div>Loading...</div>;
-  }
-
-  if (isError) {
-    return <div>Error</div>;
-  }
 
   return (
     <>
@@ -90,6 +80,7 @@ export function Warehouses() {
       <Datagrid
         rows={warehouses}
         columns={["Name", "Address"]}
+        hiddenColumns={["latitude", "longitude", "id"]}
         onSelect={(order) => setSelectedWarehouse(order)}
       />
     </>

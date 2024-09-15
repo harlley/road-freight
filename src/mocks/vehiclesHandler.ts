@@ -115,8 +115,7 @@ export const vehiclesHandler = [
           a.sort - b.sort
       );
 
-      console.log(ordersSorted);
-      return HttpResponse.json(ordersWithShipping);
+      return HttpResponse.json(ordersSorted);
     }
   ),
 ];

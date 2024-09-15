@@ -19,7 +19,8 @@ type DatagrodProps<T extends Entity> = {
   onSelect: (row: T | null) => void;
   sticky?: boolean;
   selectedRow?: T | null;
-  selectable?: boolean; // Added selectable prop
+  selectable?: boolean;
+  hiddenColumns?: string[]; // Added hiddenColumns prop
 };
 
 export function Datagrid<T extends Entity>({
@@ -29,20 +30,21 @@ export function Datagrid<T extends Entity>({
   sticky = false,
   selectedRow,
   selectable = true,
+  hiddenColumns = [], // Default value for hiddenColumns
   ...rest
 }: DatagrodProps<T>) {
-  const [select, setSelect] = useState<T | null>(selectedRow || null);
+  const [selected, setSelected] = useState<T | null>(selectedRow || null);
   const theme = useTheme();
 
   const selectHandler = (row: T) => {
-    const isSelected = select?.id === row.id;
+    const isSelected = selected?.id === row.id;
     const newSelect = isSelected ? null : row;
-    setSelect(newSelect);
+    setSelected(newSelect);
     onSelect(newSelect);
   };
 
   useEffect(() => {
-    setSelect(selectedRow ?? null);
+    setSelected(selectedRow ?? null);
   }, [selectedRow]);
 
   return (
@@ -67,18 +69,16 @@ export function Datagrid<T extends Entity>({
               onClick={selectable ? () => selectHandler(row) : undefined}
               sx={{
                 backgroundColor:
-                  select?.id === row.id
+                  selected?.id === row.id
                     ? theme.palette.action.hover
                     : theme.palette.background.default,
               }}
             >
-              {Object.keys(row).map((column, index) =>
-                column !== "id" &&
-                column !== "latitude" &&
-                column !== "longitude" ? (
+              {Object.keys(row)
+                .filter((column) => !hiddenColumns.includes(column))
+                .map((column, index) => (
                   <TableCell key={index}>{row[column]}</TableCell>
-                ) : null
-              )}
+                ))}
             </TableRow>
           ))}
         </TableBody>

@@ -14,6 +14,8 @@ export function Orders() {
   const [openModal, setOpenModal] = useState(false);
   const [selectedOrder, setSelectedOrder] = useState<Order | null>();
 
+  const { data: orders } = useQuery<Order[]>(key, api.getOrders);
+
   const queryClient = useQueryClient();
 
   const { mutate: createOrder } = useMutation(
@@ -48,20 +50,6 @@ export function Orders() {
     deleteOrder(order.id as Pick<Order, "id">);
   };
 
-  const {
-    data: orders,
-    isLoading,
-    isError,
-  } = useQuery<Order[]>(key, api.getOrders);
-
-  if (isLoading) {
-    return <div>Loading...</div>;
-  }
-
-  if (isError) {
-    return <div>Error</div>;
-  }
-
   return (
     <>
       <Button
@@ -72,6 +60,7 @@ export function Orders() {
       >
         New Order
       </Button>
+
       {selectedOrder && (
         <Button
           variant="contained"
@@ -82,20 +71,17 @@ export function Orders() {
           Delete
         </Button>
       )}
+
       <Modal open={openModal} onClose={() => setOpenModal(false)}>
         <div>
           <OrdersForm submitHandler={submitHandler} />
         </div>
       </Modal>
+
       <Datagrid
         rows={orders}
-        columns={[
-          "Date",
-          "Invoice Number",
-          "Weight (Kg)",
-          "Destination",
-          "Assigned",
-        ]}
+        columns={["Date", "Invoice Number", "Weight (Kg)", "Destination"]}
+        hiddenColumns={["assigned", "id", "latitude", "longitude"]}
         onSelect={(order) => setSelectedOrder(order)}
       />
     </>

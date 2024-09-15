@@ -83,21 +83,23 @@ export function Assignments() {
             "Destination",
             "Assigned",
           ]}
+          hiddenColumns={["latitude", "longitude", "id"]}
           onSelect={(order) => setSelectedtOrder(order)}
           selectedRow={selectedOrder}
         />
-        <Typography variant="h6">Vehicles</Typography>
 
+        <Typography variant="h6">Vehicles</Typography>
         <Datagrid
           sticky
           rows={vehicles}
           columns={["Number Plate", "Capacity (Kg)", "Availability (Kg)"]}
+          hiddenColumns={["id"]}
           onSelect={(vehicle) => setSelectedVehicle(vehicle)}
           selectedRow={selectedtVehicle}
         />
       </Stack>
-      <Typography variant="h6">Shipping</Typography>
 
+      <Typography variant="h6">Shipping</Typography>
       <Box component={Paper} sx={{ padding: 2, mb: 2, mt: 2 }}>
         <LocalizationProvider dateAdapter={AdapterDayjs}>
           <DatePicker
