@@ -160,7 +160,6 @@ export function Routes() {
       {selectedVehicle && orders && orders.length > 0 && (
         <Button
           variant="contained"
-          color="error"
           onClick={calculateRoutesHandler}
           sx={{ mb: 2 }}
         >
