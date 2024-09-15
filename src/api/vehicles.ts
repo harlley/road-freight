@@ -1,3 +1,4 @@
+import dayjs from "dayjs";
 import { headers } from ".";
 import { config } from "../config";
 import { Shipping, Vehicle } from "../types";
@@ -43,6 +44,17 @@ export const postShipping = async (shipping: Shipping) => {
       body: JSON.stringify(shipping),
       headers,
     }
+  );
+  return await response.json();
+};
+
+export const getVehiclesOrders = async (
+  id: Pick<Vehicle, "id">,
+  date: string
+) => {
+  const dateFormatted = dayjs(date).format("YYYY-MM-DD");
+  const response = await fetch(
+    `${config.apiUrl}/vehicles/${id}/orders?date=${dateFormatted}`
   );
   return await response.json();
 };

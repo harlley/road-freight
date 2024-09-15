@@ -86,4 +86,31 @@ export const vehiclesHandler = [
     localStorage.setItem("shipping", JSON.stringify(shipping));
     return HttpResponse.json(shipping, { status: 201 });
   }),
+
+  http.get(
+    `${config.apiUrl}/vehicles/:id/orders`,
+    async ({ request, params }) => {
+      const url = new URL(request.url);
+      const date = url.searchParams.get("date");
+      const shipping = JSON.parse(localStorage.getItem("shipping") || "[]");
+      const orders = JSON.parse(localStorage.getItem("orders") || "[]");
+      const vehicle = JSON.parse(localStorage.getItem("vehicles") || "[]").find(
+        (vehicle: Vehicle) => vehicle.id === params.id
+      );
+      const ordersIds = shipping
+        .filter((s: Shipping) => s.vehicleId === params.id && s.date === date)
+        .map((s: Shipping) => s.orderId);
+      console.log("date", date);
+      console.log("ordersIds", ordersIds);
+      console.log("shipping", shipping);
+      return HttpResponse.json(
+        orders
+          .filter((order: Order) => ordersIds.includes(order.id))
+          .map((order: Order) => ({
+            ...order,
+            assigned: vehicle?.numberPlate,
+          }))
+      );
+    }
+  ),
 ];

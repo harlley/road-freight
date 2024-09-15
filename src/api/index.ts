@@ -12,6 +12,7 @@ import {
   putVehicles,
   deleteVehicles,
   postShipping,
+  getVehiclesOrders,
 } from "./vehicles";
 
 import { getWarehouses, deleteWarehouses, postWarehouses } from "./warehouses";
@@ -34,4 +35,5 @@ export const api = {
   getWarehouses,
   deleteWarehouses,
   postWarehouses,
+  getVehiclesOrders,
 };

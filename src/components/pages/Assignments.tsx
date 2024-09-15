@@ -49,7 +49,7 @@ export function Assignments() {
   const assignHandler = () => {
     if (selectedtVehicle || selectedOrder) {
       const shipping: Shipping = {
-        date: date.toDate().getTime(),
+        date: date.toDate().toISOString().split("T")[0],
         vehicleId: selectedtVehicle?.id,
         orderId: selectedOrder?.id,
       };

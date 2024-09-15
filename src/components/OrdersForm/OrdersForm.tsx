@@ -45,7 +45,7 @@ export function OrdersForm({ submitHandler }: OrdersFormProps) {
                   inputRef={field.ref}
                   label="Date"
                   onChange={(date) => {
-                    field.onChange(date);
+                    field.onChange(date?.format("YYYY-MM-DD"));
                   }}
                   slotProps={{
                     textField: {

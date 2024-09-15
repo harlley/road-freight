@@ -25,7 +25,7 @@ export interface Order extends Entity, Coordinates {
 }
 
 export interface Shipping extends Entity {
-  date: number;
+  date: string;
   vehicleId: string | undefined;
   orderId: string | undefined;
 }

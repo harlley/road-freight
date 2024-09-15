@@ -98,7 +98,6 @@ export function Orders() {
         ]}
         onSelect={(order) => setSelectedOrder(order)}
       />
-      {JSON.stringify(selectedOrder, null, 2)}
     </>
   );
 }
