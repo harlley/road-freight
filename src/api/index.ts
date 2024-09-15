@@ -1,3 +1,7 @@
+export const headers = {
+  "Content-Type": "application/json",
+};
+
 import {
   getOrders,
   postOrders,
@@ -15,11 +19,9 @@ import {
   getVehiclesOrders,
 } from "./vehicles";
 
-import { getWarehouses, deleteWarehouses, postWarehouses } from "./warehouses";
+import { patchShippingsSort } from "./shippings";
 
-export const headers = {
-  "Content-Type": "application/json",
-};
+import { getWarehouses, deleteWarehouses, postWarehouses } from "./warehouses";
 
 export const api = {
   getOrders,
@@ -36,4 +38,5 @@ export const api = {
   deleteWarehouses,
   postWarehouses,
   getVehiclesOrders,
+  patchShippingsSort,
 };

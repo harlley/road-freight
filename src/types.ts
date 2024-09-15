@@ -28,6 +28,7 @@ export interface Shipping extends Entity {
   date: string;
   vehicleId: string | undefined;
   orderId: string | undefined;
+  sort?: number;
 }
 
 export interface Warehouse extends Entity, Coordinates {

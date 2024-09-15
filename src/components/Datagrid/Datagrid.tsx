@@ -19,6 +19,7 @@ type DatagrodProps<T extends Entity> = {
   onSelect: (row: T | null) => void;
   sticky?: boolean;
   selectedRow?: T | null;
+  selectable?: boolean; // Added selectable prop
 };
 
 export function Datagrid<T extends Entity>({
@@ -27,6 +28,7 @@ export function Datagrid<T extends Entity>({
   onSelect,
   sticky = false,
   selectedRow,
+  selectable = true,
   ...rest
 }: DatagrodProps<T>) {
   const [select, setSelect] = useState<T | null>(selectedRow || null);
@@ -62,7 +64,7 @@ export function Datagrid<T extends Entity>({
             <TableRow
               className={styles.tableRow}
               key={row.id}
-              onClick={() => selectHandler(row)}
+              onClick={selectable ? () => selectHandler(row) : undefined}
               sx={{
                 backgroundColor:
                   select?.id === row.id

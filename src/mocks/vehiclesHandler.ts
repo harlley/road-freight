@@ -24,10 +24,10 @@ export const vehiclesHandler = [
   http.get(`${config.apiUrl}/vehicles`, async () => {
     const vehicles = JSON.parse(localStorage.getItem("vehicles") || "[]");
     const orders = JSON.parse(localStorage.getItem("orders") || "[]");
-    const shipping = JSON.parse(localStorage.getItem("shipping") || "[]");
+    const shippings = JSON.parse(localStorage.getItem("shippings") || "[]");
 
     const vehiclesWithShipping = vehicles.map((vehicle: Vehicle) => {
-      const shippingData = shipping.filter(
+      const shippingData = shippings.filter(
         (shipping: Shipping) => shipping.vehicleId === vehicle.id
       );
       const ordersWithShipping: Order[] = orders.filter((order: Order) =>
@@ -80,11 +80,11 @@ export const vehiclesHandler = [
   }),
 
   http.post(`${config.apiUrl}/vehicles/:id/orders`, async ({ request }) => {
-    const shipping = JSON.parse(localStorage.getItem("shipping") || "[]");
+    const shippings = JSON.parse(localStorage.getItem("shippings") || "[]");
     const newShipping = (await request.json()) as Shipping;
-    shipping.push({ id: window.crypto.randomUUID(), ...newShipping });
-    localStorage.setItem("shipping", JSON.stringify(shipping));
-    return HttpResponse.json(shipping, { status: 201 });
+    shippings.push({ id: window.crypto.randomUUID(), ...newShipping });
+    localStorage.setItem("shippings", JSON.stringify(shippings));
+    return HttpResponse.json(newShipping, { status: 201 });
   }),
 
   http.get(
@@ -92,25 +92,31 @@ export const vehiclesHandler = [
     async ({ request, params }) => {
       const url = new URL(request.url);
       const date = url.searchParams.get("date");
-      const shipping = JSON.parse(localStorage.getItem("shipping") || "[]");
+      const shippings = JSON.parse(localStorage.getItem("shippings") || "[]");
       const orders = JSON.parse(localStorage.getItem("orders") || "[]");
       const vehicle = JSON.parse(localStorage.getItem("vehicles") || "[]").find(
         (vehicle: Vehicle) => vehicle.id === params.id
       );
-      const ordersIds = shipping
+      const ordersIds = shippings
         .filter((s: Shipping) => s.vehicleId === params.id && s.date === date)
         .map((s: Shipping) => s.orderId);
-      console.log("date", date);
-      console.log("ordersIds", ordersIds);
-      console.log("shipping", shipping);
-      return HttpResponse.json(
-        orders
-          .filter((order: Order) => ordersIds.includes(order.id))
-          .map((order: Order) => ({
-            ...order,
-            assigned: vehicle?.numberPlate,
-          }))
+
+      const ordersWithShipping = orders
+        .filter((order: Order) => ordersIds.includes(order.id))
+        .map((order: Order) => ({
+          sort:
+            shippings.find((item: Shipping) => item.orderId === order.id)
+              .sort || 0,
+          ...order,
+          assigned: vehicle?.numberPlate,
+        }));
+      const ordersSorted = ordersWithShipping.sort(
+        (a: typeof ordersWithShipping, b: typeof ordersWithShipping) =>
+          a.sort - b.sort
       );
+
+      console.log(ordersSorted);
+      return HttpResponse.json(ordersWithShipping);
     }
   ),
 ];

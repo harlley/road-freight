@@ -1,4 +1,4 @@
-import { useQuery } from "react-query";
+import { useMutation, useQuery, useQueryClient } from "react-query";
 import { useEffect, useState } from "react";
 import { api } from "../../api";
 import { Vehicle, Order, Warehouse } from "../../types";
@@ -19,10 +19,16 @@ import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import dayjs, { Dayjs } from "dayjs";
+import { calculateRoutes } from "../../calculateRoutes";
 
 const keyVehicles = ["vehicles"];
 const keyVehiclesOrders = ["vehiclesOrders"];
 const keyWarehouses = ["warehouses"];
+
+type UpdateShippingsSort = {
+  ordersToSort: string[];
+  path: number[];
+};
 
 export function Routes() {
   const [date, setDate] = useState<Dayjs>(dayjs());
@@ -67,8 +73,28 @@ export function Routes() {
     setSelectedVehicle(null);
   }, [selectedOrder]);
 
-  const calculateRoutesHandler = () => {
-    console.log("orders", orders);
+  const queryClient = useQueryClient();
+
+  const {
+    mutate: updateShippingsSort,
+    isLoading: isLoadingUpdateShippingSort,
+  } = useMutation(
+    async ({ ordersToSort, path }: UpdateShippingsSort) => {
+      await api.patchShippingsSort(ordersToSort, path);
+    },
+    {
+      onSuccess: () => {
+        queryClient.invalidateQueries(keyVehiclesOrders);
+      },
+    }
+  );
+
+  const calculateRoutesHandler = async () => {
+    const path = await calculateRoutes(selectedWarehouse!, orders!);
+    const pathWithoutWarehouse = path.slice(1);
+    const ordersToSort =
+      orders?.map((order) => order.id).filter((id): id is string => !!id) || [];
+    updateShippingsSort({ ordersToSort, path: pathWithoutWarehouse });
   };
 
   return (
@@ -117,6 +143,7 @@ export function Routes() {
               sticky
               rows={orders}
               columns={[
+                "#",
                 "Date",
                 "Invoice Number",
                 "Weight (Kg)",
@@ -125,6 +152,7 @@ export function Routes() {
               ]}
               onSelect={(order) => setSelectedtOrder(order)}
               selectedRow={selectedOrder}
+              selectable={false}
             />
           </>
         )}
@@ -136,7 +164,7 @@ export function Routes() {
           onClick={calculateRoutesHandler}
           sx={{ mb: 2 }}
         >
-          Calculate Routes
+          {isLoadingUpdateShippingSort ? "Calculating..." : "Calculate Routes"}
         </Button>
       )}
     </>

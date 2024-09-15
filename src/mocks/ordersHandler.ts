@@ -19,11 +19,11 @@ export const ordersHandler = [
 
   http.get(`${config.apiUrl}/orders`, async () => {
     const orders = JSON.parse(localStorage.getItem("orders") || "[]");
-    const shipping = JSON.parse(localStorage.getItem("shipping") || "[]");
+    const shippings = JSON.parse(localStorage.getItem("shippings") || "[]");
     const vehicles = JSON.parse(localStorage.getItem("vehicles") || "[]");
 
     const ordersWithShipping = orders.map((order: Order) => {
-      const shippingData = shipping.find(
+      const shippingData = shippings.find(
         (shipping: Shipping) => shipping.orderId === order.id
       );
 
@@ -69,14 +69,14 @@ export const ordersHandler = [
   http.patch(
     `${config.apiUrl}/orders/:id/unsign-vehicle`,
     async ({ params }) => {
-      const shipping = JSON.parse(localStorage.getItem("shipping") || "[]");
-      const index = shipping.findIndex(
+      const shippings = JSON.parse(localStorage.getItem("shippings") || "[]");
+      const index = shippings.findIndex(
         (s: Shipping) => s.orderId === params.id
       );
 
       if (index !== -1) {
-        shipping.splice(index, 1);
-        localStorage.setItem("shipping", JSON.stringify(shipping));
+        shippings.splice(index, 1);
+        localStorage.setItem("shippings", JSON.stringify(shippings));
         return HttpResponse.json(undefined, { status: 204 });
       }
 
