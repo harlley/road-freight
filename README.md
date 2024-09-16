@@ -9,7 +9,7 @@
 
 - [ ] Add favorite vehicle feature
 - [ ] Search list unsigned orders by day and sort results
-- [ ] handle errors
+- [ ] handle more errors
 - [ ] Add more tests
 - [ ] Add responsive design
 - [ ] Add pagination
