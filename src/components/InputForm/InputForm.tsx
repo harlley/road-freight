@@ -40,7 +40,7 @@ export function InputForm<T extends FieldValues>({
           {...register(name, { required: true })}
           error={!!errors[name]}
           fullWidth
-          inputProps={{ maxLength: 100 }}
+          inputProps={{ maxLength: 100, "data-testid": name }}
           type={type}
         />
       </FormControl>
