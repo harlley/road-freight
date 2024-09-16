@@ -11,3 +11,6 @@
 - [ ] Search list unsigned orders by day and sort results
 - [ ] handle errors
 - [ ] Add more tests
+- [ ] Add responsive design
+- [ ] Add pagination
+- [ ] Add empty state

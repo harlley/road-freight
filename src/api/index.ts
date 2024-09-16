@@ -23,7 +23,7 @@ import { patchShippingsSort } from "./shippings";
 
 import { getWarehouses, deleteWarehouses, postWarehouses } from "./warehouses";
 
-import { getAutoComplete, getLookup } from "./here";
+import { getAutoComplete, getLookup, getMatrixRouter } from "./here";
 
 export const api = {
   getOrders,
@@ -45,5 +45,6 @@ export const api = {
   here: {
     getAutoComplete,
     getLookup,
+    getMatrixRouter,
   },
 };

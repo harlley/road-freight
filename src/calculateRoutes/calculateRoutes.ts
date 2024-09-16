@@ -1,5 +1,4 @@
-import { headers } from "../api";
-import { config } from "../config";
+import { api } from "../api";
 import { Order, Warehouse } from "../types";
 
 export function tspNearestNeighbor(distances: number[][]): number[] {
@@ -41,26 +40,10 @@ export async function calculateRoutes(warehouse: Warehouse, orders: Order[]) {
     return { lat: Number(latitude), lng: Number(longitude) };
   });
 
-  const response = fetch(
-    `${config.here.matrixRouter}?apiKey=${config.here.apiKey}&async=false`,
-    {
-      method: "POST",
-      headers,
-      body: JSON.stringify({
-        origins: [warehouseCoordinates, ...ordersCoordinates],
-        destinations: [warehouseCoordinates, ...ordersCoordinates],
-        transportMode: "truck",
-        matrixAttributes: ["distances"],
-        regionDefinition: {
-          type: "autoCircle",
-        },
-      }),
-    },
+  const distances = await api.here.getMatrixRouter(
+    warehouseCoordinates,
+    ordersCoordinates,
   );
-
-  const data = await (await response).json();
-
-  const distances = data.matrix.distances;
 
   // convert a flat array to a matrix
   const matrix: number[][] = [];
