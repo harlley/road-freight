@@ -19,31 +19,31 @@ import styles from "./pages.module.css";
 import { createContext, Dispatch, SetStateAction, useState } from "react";
 
 interface ContextType {
-  setSnackbarMessage: Dispatch<SetStateAction<string>>;
+  setMessage: Dispatch<SetStateAction<string>>;
 }
 
-export const Context = createContext<ContextType>({
-  setSnackbarMessage: () => {},
+export const ContextLayout = createContext<ContextType>({
+  setMessage: () => {},
 });
 
 export function Layout() {
   const location = useLocation();
-  const [snackbarMessage, setSnackbarMessage] = useState("");
+  const [message, setMessage] = useState("");
 
   const handleClose = () => {
-    setSnackbarMessage("");
+    setMessage("");
   };
 
   return (
-    <Context.Provider value={{ setSnackbarMessage }}>
+    <ContextLayout.Provider value={{ setMessage }}>
       <Snackbar
-        open={!!snackbarMessage}
+        open={!!message}
         autoHideDuration={3000}
         anchorOrigin={{ vertical: "top", horizontal: "right" }}
         onClose={handleClose}
       >
         <Alert severity="error" variant="filled">
-          {snackbarMessage}
+          {message}
         </Alert>
       </Snackbar>
       <CssBaseline />
@@ -89,6 +89,6 @@ export function Layout() {
       <Box component="main" className={styles.main}>
         <Outlet />
       </Box>
-    </Context.Provider>
+    </ContextLayout.Provider>
   );
 }

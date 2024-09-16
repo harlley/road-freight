@@ -7,14 +7,14 @@ import { VehiclesForm } from "../VehiclesForm";
 import { api } from "../../api";
 import { Vehicle } from "../../types";
 import { Datagrid } from "../Datagrid";
-import { Context } from "./Layout";
+import { ContextLayout } from "./Layout";
 
 const key = ["vehicles"];
 
 export function Vehicles() {
   const [openModal, setOpenModal] = useState(false);
   const [selectedOrder, setSelectedOrder] = useState<Vehicle | null>();
-  const { setSnackbarMessage } = useContext(Context);
+  const { setMessage } = useContext(ContextLayout);
 
   const { data: vehicles } = useQuery<Vehicle[]>(key, api.getVehicles);
 
@@ -31,7 +31,7 @@ export function Vehicles() {
       },
       onError: (error) => {
         const errorMessage = (error as Error).message;
-        setSnackbarMessage(JSON.parse(errorMessage).message);
+        setMessage(JSON.parse(errorMessage).message);
       },
     },
   );

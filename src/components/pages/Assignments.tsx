@@ -1,5 +1,5 @@
 import { useMutation, useQuery, useQueryClient } from "react-query";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { api } from "../../api";
 import { Vehicle, Order, Shipping } from "../../types";
 import { Datagrid } from "../Datagrid";
@@ -8,14 +8,15 @@ import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import dayjs, { Dayjs } from "dayjs";
-
+import { ContextLayout } from "../pages/Layout";
 const keyVehicles = ["vehicles"];
 const keyOrders = ["orders"];
 
 export function Assignments() {
   const [date, setDate] = useState<Dayjs>(dayjs());
-  const [selectedtVehicle, setSelectedVehicle] = useState<Vehicle | null>();
-  const [selectedOrder, setSelectedtOrder] = useState<Order | null>();
+  const [selectedVehicle, setSelectedVehicle] = useState<Vehicle | null>();
+  const [selectedOrder, setSelectedOrder] = useState<Order | null>();
+  const { setMessage } = useContext(ContextLayout);
 
   const { data: vehicles } = useQuery<Vehicle[]>(keyVehicles, api.getVehicles);
   const { data: orders } = useQuery<Order[]>(keyOrders, api.getOrders);
@@ -47,27 +48,32 @@ export function Assignments() {
   );
 
   const assignHandler = () => {
-    if (selectedtVehicle || selectedOrder) {
+    if (selectedVehicle || selectedOrder) {
       const shipping: Shipping = {
         date: date.toDate().toISOString().split("T")[0],
-        vehicleId: selectedtVehicle?.id,
+        vehicleId: selectedVehicle?.id,
         orderId: selectedOrder?.id,
       };
       assignOrder(shipping);
-      setSelectedtOrder(null);
+      setSelectedOrder(null);
     }
   };
 
   const unassignHandler = () => {
     if (selectedOrder) {
       unassignOrder(selectedOrder.id as Pick<Order, "id">);
-      setSelectedtOrder(null);
+      setSelectedOrder(null);
     }
   };
 
   useEffect(() => {
     setSelectedVehicle(null);
   }, [selectedOrder]);
+  useEffect(() => {
+    if (Number(selectedVehicle?.availability) < Number(selectedOrder?.weight)) {
+      setMessage("Vehicle does not have enough space for this order");
+    }
+  }, [selectedVehicle, selectedOrder, setMessage]);
 
   return (
     <>
@@ -84,7 +90,7 @@ export function Assignments() {
             "Assigned",
           ]}
           hiddenColumns={["latitude", "longitude", "id"]}
-          onSelect={(order) => setSelectedtOrder(order)}
+          onSelect={(order) => setSelectedOrder(order)}
           selectedRow={selectedOrder}
         />
 
@@ -95,7 +101,7 @@ export function Assignments() {
           columns={["Number Plate", "Capacity (Kg)", "Availability (Kg)"]}
           hiddenColumns={["id"]}
           onSelect={(vehicle) => setSelectedVehicle(vehicle)}
-          selectedRow={selectedtVehicle}
+          selectedRow={selectedVehicle}
         />
       </Stack>
 
@@ -110,9 +116,9 @@ export function Assignments() {
         </LocalizationProvider>
       </Box>
 
-      {selectedtVehicle &&
+      {selectedVehicle &&
         selectedOrder?.assigned === "" &&
-        Number(selectedtVehicle.availability) >=
+        Number(selectedVehicle.availability) >=
           Number(selectedOrder.weight) && (
           <Button variant="contained" color="primary" onClick={assignHandler}>
             Assign Order to Vehicle

@@ -13,6 +13,9 @@ export const postOrders = async (order: Order) => {
     body: JSON.stringify(order),
     headers,
   });
+  if (!response.ok) {
+    throw new Error(await response.text());
+  }
   return await response.json();
 };
 

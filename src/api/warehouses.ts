@@ -13,6 +13,9 @@ export const postWarehouses = async (warehouse: Warehouse) => {
     body: JSON.stringify(warehouse),
     headers,
   });
+  if (!response.ok) {
+    throw new Error(await response.text());
+  }
   return await response.json();
 };
 

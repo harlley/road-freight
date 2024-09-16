@@ -1,12 +1,13 @@
 import { Button, Modal } from "@mui/material";
 import { useQuery } from "react-query";
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { useMutation, useQueryClient } from "react-query";
 import { SubmitHandler } from "react-hook-form";
 import { WarehousesForm } from "../WarehousesForm";
 import { api } from "../../api";
 import { Warehouse } from "../../types";
 import { Datagrid } from "../Datagrid";
+import { ContextLayout } from "./Layout";
 
 const key = ["warehouses"];
 
@@ -14,6 +15,7 @@ export function Warehouses() {
   const [openModal, setOpenModal] = useState(false);
   const [selectedWarehouse, setSelectedWarehouse] =
     useState<Warehouse | null>();
+  const { setMessage } = useContext(ContextLayout);
 
   const { data: warehouses } = useQuery<Warehouse[]>(key, api.getWarehouses);
 
@@ -28,6 +30,10 @@ export function Warehouses() {
       onSuccess: () => {
         queryClient.invalidateQueries(key);
         setOpenModal(false);
+      },
+      onError: (error) => {
+        const errorMessage = (error as Error).message;
+        setMessage(JSON.parse(errorMessage).message);
       },
     },
   );

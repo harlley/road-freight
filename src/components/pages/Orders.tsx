@@ -1,18 +1,20 @@
 import { Button, Modal } from "@mui/material";
 import { useQuery } from "react-query";
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { useMutation, useQueryClient } from "react-query";
 import { SubmitHandler } from "react-hook-form";
 import { OrdersForm } from "../OrdersForm";
 import { api } from "../../api";
 import { Order } from "../../types";
 import { Datagrid } from "../Datagrid";
+import { ContextLayout } from "./Layout";
 
 const key = ["orders"];
 
 export function Orders() {
   const [openModal, setOpenModal] = useState(false);
   const [selectedOrder, setSelectedOrder] = useState<Order | null>();
+  const { setMessage } = useContext(ContextLayout);
 
   const { data: orders } = useQuery<Order[]>(key, api.getOrders);
 
@@ -26,6 +28,10 @@ export function Orders() {
       onSuccess: () => {
         queryClient.invalidateQueries(key);
         setOpenModal(false);
+      },
+      onError: (error) => {
+        const errorMessage = (error as Error).message;
+        setMessage(JSON.parse(errorMessage).message);
       },
     },
   );
