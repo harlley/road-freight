@@ -34,9 +34,8 @@ export function Routes() {
   const [date, setDate] = useState<Dayjs>(dayjs());
   const [selectedVehicle, setSelectedVehicle] = useState<Vehicle | null>();
   const [selectedOrder, setSelectedtOrder] = useState<Order | null>();
-  const [selectedWarehouse, setSelectedWarehouse] = useState<Warehouse | null>(
-    null
-  );
+  const [selectedWarehouse, setSelectedWarehouse] =
+    useState<Warehouse | null>();
 
   const { data: vehicles } = useQuery<Vehicle[]>(keyVehicles, api.getVehicles);
 
@@ -90,6 +89,11 @@ export function Routes() {
     setSelectedWarehouse(selectedWarehouse || null);
   };
 
+  const dateChangeHandler = (val: Dayjs | null) => {
+    if (val) setDate(val);
+    setSelectedVehicle(null);
+  };
+
   const calculateRoutesHandler = async () => {
     const path = await calculateRoutes(selectedWarehouse!, orders!);
     const pathWithoutWarehouse = path.slice(1);
@@ -105,7 +109,7 @@ export function Routes() {
           <DatePicker
             label="Shipping Date"
             value={dayjs(date)}
-            onChange={(val) => setDate(val as Dayjs)}
+            onChange={dateChangeHandler}
           />
         </LocalizationProvider>
 
