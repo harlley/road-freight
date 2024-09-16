@@ -37,10 +37,12 @@ export function Routes() {
   const [selectedWarehouse, setSelectedWarehouse] =
     useState<Warehouse | null>();
 
+  const queryClient = useQueryClient();
+
   const { data: vehicles } = useQuery<Vehicle[]>(keyVehicles, api.getVehicles);
 
   const { data: orders } = useQuery<Order[]>(
-    keyVehiclesOrders,
+    [keyVehiclesOrders, selectedVehicle?.id, date.toString()],
     () =>
       api.getVehiclesOrders(
         selectedVehicle?.id as Pick<Vehicle, "id">,
@@ -61,12 +63,6 @@ export function Routes() {
       setSelectedWarehouse(warehouses[0]);
     }
   }, [warehouses, selectedWarehouse]);
-
-  useEffect(() => {
-    setSelectedVehicle(null);
-  }, [selectedOrder]);
-
-  const queryClient = useQueryClient();
 
   const {
     mutate: updateShippingsSort,
