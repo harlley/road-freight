@@ -5,7 +5,7 @@ export const getAutoComplete = async (query: string) => {
   if (!query) return;
 
   const response = await fetch(
-    `${config.here.autocomplete}?q=${query}&apiKey=${config.here.apiKey}&limit=20`
+    `${config.here.autocomplete}?q=${query}&apiKey=${config.here.apiKey}&limit=20`,
   );
 
   const data = await response.json();
@@ -20,7 +20,7 @@ export const getAutoComplete = async (query: string) => {
 
 export const getLookup = async (id: string) => {
   const response = await fetch(
-    `${config.here.lookup}?id=${id}&apiKey=${config.here.apiKey}`
+    `${config.here.lookup}?id=${id}&apiKey=${config.here.apiKey}`,
   );
 
   const data = await response.json();

@@ -26,7 +26,7 @@ export const deleteVehicles = async (id: Pick<Vehicle, "id">) => {
 
 export const putVehicles = async (
   id: Pick<Vehicle, "id">,
-  vehicle: Vehicle
+  vehicle: Vehicle,
 ) => {
   const response = await fetch(`${config.apiUrl}/vehicles/${id}`, {
     method: "PUT",
@@ -43,18 +43,18 @@ export const postShipping = async (shipping: Shipping) => {
       method: "POST",
       body: JSON.stringify(shipping),
       headers,
-    }
+    },
   );
   return await response.json();
 };
 
 export const getVehiclesOrders = async (
   id: Pick<Vehicle, "id">,
-  date: string
+  date: string,
 ) => {
   const dateFormatted = dayjs(date).format("YYYY-MM-DD");
   const response = await fetch(
-    `${config.apiUrl}/vehicles/${id}/orders?date=${dateFormatted}`
+    `${config.apiUrl}/vehicles/${id}/orders?date=${dateFormatted}`,
   );
   return await response.json();
 };

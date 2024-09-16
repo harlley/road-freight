@@ -39,7 +39,7 @@ export function AutoCompleteLocale<T extends FieldValues>({
 
   const onChangeHandler = (
     _: React.SyntheticEvent<Element, Event>,
-    value: string | Suggestion | null
+    value: string | Suggestion | null,
   ) => {
     setLocale(value);
   };
@@ -53,12 +53,12 @@ export function AutoCompleteLocale<T extends FieldValues>({
 
   const debouncedFetchSuggestions = useCallback(
     debounce(fetchSuggestions, 500),
-    []
+    [],
   );
 
   const onInputChangeHandler = (
     _: React.SyntheticEvent<Element, Event>,
-    value: string
+    value: string,
   ) => {
     setInputValue(value);
     debouncedFetchSuggestions(value);
@@ -67,7 +67,7 @@ export function AutoCompleteLocale<T extends FieldValues>({
   useEffect(() => {
     const fetchCoordinates = async () => {
       const { latitude, longitude } = await api.here.getLookup(
-        (locale as Suggestion).id
+        (locale as Suggestion).id,
       );
       setLatitude(latitude);
       setLongitude(longitude);

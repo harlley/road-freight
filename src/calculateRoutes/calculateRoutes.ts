@@ -55,7 +55,7 @@ export async function calculateRoutes(warehouse: Warehouse, orders: Order[]) {
           type: "autoCircle",
         },
       }),
-    }
+    },
   );
 
   const data = await (await response).json();

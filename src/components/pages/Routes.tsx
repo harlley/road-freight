@@ -44,16 +44,16 @@ export function Routes() {
     () =>
       api.getVehiclesOrders(
         selectedVehicle?.id as Pick<Vehicle, "id">,
-        date.toString()
+        date.toString(),
       ),
     {
       enabled: !!selectedVehicle,
-    }
+    },
   );
 
   const { data: warehouses } = useQuery<Warehouse[]>(
     keyWarehouses,
-    api.getWarehouses
+    api.getWarehouses,
   );
 
   useEffect(() => {
@@ -79,12 +79,12 @@ export function Routes() {
       onSuccess: () => {
         queryClient.invalidateQueries(keyVehiclesOrders);
       },
-    }
+    },
   );
 
   const warehouseChangeHandler = (event: SelectChangeEvent<string>) => {
     const selectedWarehouse = warehouses?.find(
-      (warehouse) => warehouse.id === event.target.value
+      (warehouse) => warehouse.id === event.target.value,
     );
     setSelectedWarehouse(selectedWarehouse || null);
   };

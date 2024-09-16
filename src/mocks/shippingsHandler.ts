@@ -7,7 +7,7 @@ export const shippingsHandler = [
     const body = await request.json();
     const { orders, sorts } = body as { orders: string[]; sorts: number[] };
     let shippings: Shipping[] = JSON.parse(
-      localStorage.getItem("shippings") || "[]"
+      localStorage.getItem("shippings") || "[]",
     );
 
     shippings = shippings.map((shipping) => {

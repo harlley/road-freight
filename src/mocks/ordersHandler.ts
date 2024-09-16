@@ -9,7 +9,7 @@ export const ordersHandler = [
     if (orders.find((order: Order) => order.invoice === newOrder.invoice)) {
       return HttpResponse.json(
         { message: "Order with the same invoice number already exists" },
-        { status: 400 }
+        { status: 400 },
       );
     }
     orders.push({ id: window.crypto.randomUUID(), ...newOrder });
@@ -24,11 +24,11 @@ export const ordersHandler = [
 
     const ordersWithShipping = orders.map((order: Order) => {
       const shippingData = shippings.find(
-        (shipping: Shipping) => shipping.orderId === order.id
+        (shipping: Shipping) => shipping.orderId === order.id,
       );
 
       const vehicle: Vehicle = vehicles.find(
-        (vehicle: Vehicle) => vehicle.id === shippingData?.vehicleId
+        (vehicle: Vehicle) => vehicle.id === shippingData?.vehicleId,
       );
       return {
         ...order,
@@ -71,7 +71,7 @@ export const ordersHandler = [
     async ({ params }) => {
       const shippings = JSON.parse(localStorage.getItem("shippings") || "[]");
       const index = shippings.findIndex(
-        (s: Shipping) => s.orderId === params.id
+        (s: Shipping) => s.orderId === params.id,
       );
 
       if (index !== -1) {
@@ -82,8 +82,8 @@ export const ordersHandler = [
 
       return HttpResponse.json(
         { message: "Shipping not found" },
-        { status: 404 }
+        { status: 404 },
       );
-    }
+    },
   ),
 ];

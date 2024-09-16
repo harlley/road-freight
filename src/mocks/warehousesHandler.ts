@@ -8,12 +8,12 @@ export const warehousesHandler = [
     const newWarehouse = (await request.json()) as Warehouse;
     if (
       warehouses.find(
-        (warehouse: Warehouse) => warehouse.name === newWarehouse.name
+        (warehouse: Warehouse) => warehouse.name === newWarehouse.name,
       )
     ) {
       return HttpResponse.json(
         { message: "Warehouse with the same name already exists" },
-        { status: 400 }
+        { status: 400 },
       );
     }
     warehouses.push({ id: window.crypto.randomUUID(), ...newWarehouse });
@@ -29,7 +29,7 @@ export const warehousesHandler = [
   http.delete(`${config.apiUrl}/warehouses/:id`, async ({ params }) => {
     const warehouses = JSON.parse(localStorage.getItem("warehouses") || "[]");
     const index = warehouses.findIndex(
-      (warehouse: Warehouse) => warehouse.id === params.id
+      (warehouse: Warehouse) => warehouse.id === params.id,
     );
 
     if (index !== -1) {
@@ -40,7 +40,7 @@ export const warehousesHandler = [
 
     return HttpResponse.json(
       { message: "Warehouse not found" },
-      { status: 404 }
+      { status: 404 },
     );
   }),
 ];

@@ -31,7 +31,7 @@ export function Assignments() {
         queryClient.invalidateQueries(keyOrders);
         queryClient.invalidateQueries(keyVehicles);
       },
-    }
+    },
   );
 
   const { mutate: unassignOrder } = useMutation(
@@ -43,7 +43,7 @@ export function Assignments() {
         queryClient.invalidateQueries(keyOrders);
         queryClient.invalidateQueries(keyVehicles);
       },
-    }
+    },
   );
 
   const assignHandler = () => {

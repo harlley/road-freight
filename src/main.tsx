@@ -25,6 +25,6 @@ enableMocking().then(() => {
         <RouterProvider router={router} />
         <ReactQueryDevtools initialIsOpen={false} />
       </QueryClientProvider>
-    </StrictMode>
+    </StrictMode>,
   );
 });

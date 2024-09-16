@@ -8,12 +8,12 @@ export const vehiclesHandler = [
     const newVehicle = (await request.json()) as Vehicle;
     if (
       vehicles.find(
-        (vehicle: Vehicle) => vehicle.numberPlate === newVehicle.numberPlate
+        (vehicle: Vehicle) => vehicle.numberPlate === newVehicle.numberPlate,
       )
     ) {
       return HttpResponse.json(
         { message: "Vehicle with the same number plate already exists" },
-        { status: 400 }
+        { status: 400 },
       );
     }
     vehicles.push({ id: window.crypto.randomUUID(), ...newVehicle });
@@ -28,14 +28,14 @@ export const vehiclesHandler = [
 
     const vehiclesWithShipping = vehicles.map((vehicle: Vehicle) => {
       const shippingData = shippings.filter(
-        (shipping: Shipping) => shipping.vehicleId === vehicle.id
+        (shipping: Shipping) => shipping.vehicleId === vehicle.id,
       );
       const ordersWithShipping: Order[] = orders.filter((order: Order) =>
-        shippingData.map((s: Shipping) => s.orderId).includes(order.id)
+        shippingData.map((s: Shipping) => s.orderId).includes(order.id),
       );
       const totalVehicleWeight = ordersWithShipping.reduce(
         (acc, order) => acc + Number(order.weight),
-        0
+        0,
       );
       return {
         ...vehicle,
@@ -51,7 +51,7 @@ export const vehiclesHandler = [
   http.delete(`${config.apiUrl}/vehicles/:id`, async ({ params }) => {
     const vehicles = JSON.parse(localStorage.getItem("vehicles") || "[]");
     const index = vehicles.findIndex(
-      (vehicle: Vehicle) => vehicle.id === params.id
+      (vehicle: Vehicle) => vehicle.id === params.id,
     );
 
     if (index !== -1) {
@@ -66,7 +66,7 @@ export const vehiclesHandler = [
   http.put(`${config.apiUrl}/vehicles/:id`, async ({ params, request }) => {
     const vehicles = JSON.parse(localStorage.getItem("vehicles") || "[]");
     const index = vehicles.findIndex(
-      (vehicle: Vehicle) => vehicle.id === params.id
+      (vehicle: Vehicle) => vehicle.id === params.id,
     );
 
     if (index !== -1) {
@@ -95,7 +95,7 @@ export const vehiclesHandler = [
       const shippings = JSON.parse(localStorage.getItem("shippings") || "[]");
       const orders = JSON.parse(localStorage.getItem("orders") || "[]");
       const vehicle = JSON.parse(localStorage.getItem("vehicles") || "[]").find(
-        (vehicle: Vehicle) => vehicle.id === params.id
+        (vehicle: Vehicle) => vehicle.id === params.id,
       );
       const ordersIds = shippings
         .filter((s: Shipping) => s.vehicleId === params.id && s.date === date)
@@ -112,10 +112,10 @@ export const vehiclesHandler = [
         }));
       const ordersSorted = ordersWithShipping.sort(
         (a: typeof ordersWithShipping, b: typeof ordersWithShipping) =>
-          a.sort - b.sort
+          a.sort - b.sort,
       );
 
       return HttpResponse.json(ordersSorted);
-    }
+    },
   ),
 ];

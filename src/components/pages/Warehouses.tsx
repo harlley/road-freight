@@ -29,7 +29,7 @@ export function Warehouses() {
         queryClient.invalidateQueries(key);
         setOpenModal(false);
       },
-    }
+    },
   );
 
   const { mutate: deleteWarehouse } = useMutation(
@@ -41,7 +41,7 @@ export function Warehouses() {
         queryClient.invalidateQueries(key);
         setOpenModal(false);
       },
-    }
+    },
   );
 
   const submitHandler: SubmitHandler<Warehouse> = async (warehouse) => {

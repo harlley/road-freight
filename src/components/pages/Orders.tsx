@@ -27,7 +27,7 @@ export function Orders() {
         queryClient.invalidateQueries(key);
         setOpenModal(false);
       },
-    }
+    },
   );
 
   const { mutate: deleteOrder } = useMutation(
@@ -39,7 +39,7 @@ export function Orders() {
         queryClient.invalidateQueries(key);
         setOpenModal(false);
       },
-    }
+    },
   );
 
   const submitHandler: SubmitHandler<Order> = async (order) => {

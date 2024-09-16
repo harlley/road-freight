@@ -28,7 +28,7 @@ export function Vehicles() {
         queryClient.invalidateQueries(key);
         setOpenModal(false);
       },
-    }
+    },
   );
 
   const { mutate: deleteVehicle } = useMutation(
@@ -40,7 +40,7 @@ export function Vehicles() {
         queryClient.invalidateQueries(key);
         setOpenModal(false);
       },
-    }
+    },
   );
 
   const submitHandler: SubmitHandler<Vehicle> = async (vehicle) => {
