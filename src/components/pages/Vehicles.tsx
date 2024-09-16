@@ -1,25 +1,26 @@
 import { Button, Modal } from "@mui/material";
 import { useQuery } from "react-query";
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { useMutation, useQueryClient } from "react-query";
 import { SubmitHandler } from "react-hook-form";
 import { VehiclesForm } from "../VehiclesForm";
 import { api } from "../../api";
 import { Vehicle } from "../../types";
 import { Datagrid } from "../Datagrid";
+import { Context } from "./Layout";
 
 const key = ["vehicles"];
 
 export function Vehicles() {
   const [openModal, setOpenModal] = useState(false);
   const [selectedOrder, setSelectedOrder] = useState<Vehicle | null>();
+  const { setSnackbarMessage } = useContext(Context);
 
   const { data: vehicles } = useQuery<Vehicle[]>(key, api.getVehicles);
 
   const queryClient = useQueryClient();
 
   const { mutate: createVehicle } = useMutation(
-    key,
     async (vehicle: Vehicle) => {
       await api.postVehicles(vehicle);
     },
@@ -27,6 +28,10 @@ export function Vehicles() {
       onSuccess: () => {
         queryClient.invalidateQueries(key);
         setOpenModal(false);
+      },
+      onError: (error) => {
+        const errorMessage = (error as Error).message;
+        setSnackbarMessage(JSON.parse(errorMessage).message);
       },
     },
   );

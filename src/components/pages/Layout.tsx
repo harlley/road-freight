@@ -12,14 +12,40 @@ import {
   CssBaseline,
   Box,
   ListItemButton,
+  Snackbar,
+  Alert,
 } from "@mui/material";
 import styles from "./pages.module.css";
+import { createContext, Dispatch, SetStateAction, useState } from "react";
+
+interface ContextType {
+  setSnackbarMessage: Dispatch<SetStateAction<string>>;
+}
+
+export const Context = createContext<ContextType>({
+  setSnackbarMessage: () => {},
+});
 
 export function Layout() {
   const location = useLocation();
+  const [snackbarMessage, setSnackbarMessage] = useState("");
+
+  const handleClose = () => {
+    setSnackbarMessage("");
+  };
 
   return (
-    <>
+    <Context.Provider value={{ setSnackbarMessage }}>
+      <Snackbar
+        open={!!snackbarMessage}
+        autoHideDuration={3000}
+        anchorOrigin={{ vertical: "top", horizontal: "right" }}
+        onClose={handleClose}
+      >
+        <Alert severity="error" variant="filled">
+          {snackbarMessage}
+        </Alert>
+      </Snackbar>
       <CssBaseline />
       <Drawer variant="permanent">
         <List className={styles.menu}>
@@ -63,6 +89,6 @@ export function Layout() {
       <Box component="main" className={styles.main}>
         <Outlet />
       </Box>
-    </>
+    </Context.Provider>
   );
 }

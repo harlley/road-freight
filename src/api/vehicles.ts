@@ -14,6 +14,9 @@ export const postVehicles = async (vehicle: Vehicle) => {
     body: JSON.stringify(vehicle),
     headers,
   });
+  if (!response.ok) {
+    throw new Error(await response.text());
+  }
   return await response.json();
 };
 
