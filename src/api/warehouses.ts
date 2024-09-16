@@ -13,9 +13,17 @@ export const postWarehouses = async (warehouse: Warehouse) => {
     body: JSON.stringify(warehouse),
     headers,
   });
+
+  if (response.status >= 500) {
+    throw new Error(
+      `Server error: ${response.status} - ${await response.text()}`,
+    );
+  }
+
   if (!response.ok) {
     throw new Error(await response.text());
   }
+
   return await response.json();
 };
 

@@ -22,7 +22,6 @@ export function Warehouses() {
   const queryClient = useQueryClient();
 
   const { mutate: createWarehouse } = useMutation(
-    key,
     async (warehouse: Warehouse) => {
       await api.postWarehouses(warehouse);
     },
@@ -31,9 +30,12 @@ export function Warehouses() {
         queryClient.invalidateQueries(key);
         setOpenModal(false);
       },
-      onError: (error) => {
-        const errorMessage = (error as Error).message;
-        setMessage(JSON.parse(errorMessage).message);
+      onError: (error: Error) => {
+        if (error.message.includes("Server error")) {
+          setMessage("Something went wrong");
+        } else {
+          setMessage(JSON.parse(error.message).message);
+        }
       },
     },
   );
