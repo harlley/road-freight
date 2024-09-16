@@ -10,8 +10,10 @@ import {
   Path,
   FieldError,
 } from "react-hook-form";
-import { useAutocompleteLocale } from "./useAutoCompleteLocale";
 import { Coordinates, Suggestion } from "../../types";
+import { useState, useCallback, useEffect } from "react";
+import { api } from "../../api";
+import debounce from "lodash.debounce";
 
 interface AutoCompleteLocaleProps<T extends FieldValues> {
   onSelect?: (value: Coordinates) => void;
@@ -22,23 +24,18 @@ interface AutoCompleteLocaleProps<T extends FieldValues> {
 }
 
 export function AutoCompleteLocale<T extends FieldValues>({
-  // onSelect,
   register,
   name,
   errors,
   label,
 }: AutoCompleteLocaleProps<T>) {
-  const theme = useTheme();
+  const [options, setOptions] = useState<Suggestion[]>([]);
+  const [latitude, setLatitude] = useState<string>("");
+  const [longitude, setLongitude] = useState<string>("");
+  const [locale, setLocale] = useState<Suggestion | null | string>(null);
+  const [inputValue, setInputValue] = useState<string>("");
 
-  const {
-    options,
-    inputValue,
-    setInputValue,
-    setLocale,
-    debouncedFetchSuggestions,
-    latitude,
-    longitude,
-  } = useAutocompleteLocale();
+  const theme = useTheme();
 
   const onChangeHandler = (
     _: React.SyntheticEvent<Element, Event>,
@@ -47,6 +44,18 @@ export function AutoCompleteLocale<T extends FieldValues>({
     setLocale(value);
   };
 
+  const fetchSuggestions = async (value: string) => {
+    if (value) {
+      const items = await api.here.getAutoComplete(value);
+      setOptions(items || []);
+    }
+  };
+
+  const debouncedFetchSuggestions = useCallback(
+    debounce(fetchSuggestions, 500),
+    []
+  );
+
   const onInputChangeHandler = (
     _: React.SyntheticEvent<Element, Event>,
     value: string
@@ -54,6 +63,17 @@ export function AutoCompleteLocale<T extends FieldValues>({
     setInputValue(value);
     debouncedFetchSuggestions(value);
   };
+
+  useEffect(() => {
+    const fetchCoordinates = async () => {
+      const { latitude, longitude } = await api.here.getLookup(
+        (locale as Suggestion).id
+      );
+      setLatitude(latitude);
+      setLongitude(longitude);
+    };
+    fetchCoordinates();
+  }, [locale]);
 
   return (
     <>
