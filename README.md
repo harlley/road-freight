@@ -9,8 +9,8 @@
 
 - [ ] Add favorite vehicle feature
 - [ ] Search list unsigned orders by day and sort results
-- [ ] handle more errors
+- [ ] Add more errors handling
 - [ ] Add more tests
 - [ ] Add responsive design
-- [ ] Add pagination
+- [ ] Add Infinity scrolling
 - [ ] Add empty state
